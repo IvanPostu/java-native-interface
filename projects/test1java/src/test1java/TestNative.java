@@ -15,6 +15,7 @@ public class TestNative {
         // System.load("test1java_TestNative");
         // "/jni/" + "lib" + DYNAMIC_LIB_NAME + ".so"
         loadLibrary();
+        init();
     }
 
     public native boolean isOdd(int num);
@@ -42,11 +43,11 @@ public class TestNative {
 
     public native void printPerson(Person person);
 
-    //
-
     public static native void printStaticPerson();
 
     public static native void setPerson(Person p, String name, int age, String exampleStaticValue, int staticIntValue);
+
+    public static native void init();
 
     public static void main(String[] args) throws Exception {
         TestNative testNative = new TestNative();

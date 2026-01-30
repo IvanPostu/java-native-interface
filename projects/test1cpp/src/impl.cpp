@@ -1,8 +1,11 @@
 #include "./jni/test1java_TestNative.h"
 #include "./jni/test1java_example1_Animal.h"
 #include "./jni/test1java_example1_Dog.h"
+#include <cstddef>
 #include <cstdio>
 #include <cstdlib>
+
+static jfieldID PERSON_INSTANCE_AGE_FIELD_ID = NULL;
 
 JNIEXPORT jstring JNICALL Java_test1java_example1_Animal_bark(JNIEnv *env,
                                                               jobject obj) {
@@ -206,7 +209,15 @@ JNIEXPORT void JNICALL Java_test1java_TestNative_setPerson(
   // method caching gives 4x performance
   static jfieldID localFieldId1 =
       env->GetFieldID(person_class, "name", "Ljava/lang/String;");
-  jfieldID localFieldId2 = env->GetFieldID(person_class, "age", "I");
+  jfieldID localFieldId2 = PERSON_INSTANCE_AGE_FIELD_ID != NULL
+                               ? PERSON_INSTANCE_AGE_FIELD_ID
+                               : env->GetFieldID(person_class, "age", "I");
   env->SetObjectField(obj, localFieldId1, name);
   env->SetIntField(obj, localFieldId2, age);
+}
+
+JNIEXPORT void JNICALL Java_test1java_TestNative_init(JNIEnv *env,
+                                                      jclass TestNative) {
+  jclass person_class = env->FindClass("test1java/Person");
+  PERSON_INSTANCE_AGE_FIELD_ID = env->GetFieldID(person_class, "age", "I");
 }
