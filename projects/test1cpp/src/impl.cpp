@@ -1,6 +1,7 @@
 #include "./jni/test1java_TestNative.h"
 #include "./jni/test1java_example1_Animal.h"
 #include "./jni/test1java_example1_Dog.h"
+#include <cstdio>
 #include <cstdlib>
 
 JNIEXPORT jboolean JNICALL Java_test1java_TestNative_isOdd(JNIEnv *env,
@@ -94,4 +95,47 @@ JNIEXPORT jdouble JNICALL Java_test1java_TestNative_max(JNIEnv *env,
   }
 
   return max_value;
+}
+
+JNIEXPORT jstring JNICALL Java_test1java_TestNative_speak__(JNIEnv *env,
+                                                            jobject obj) {
+  const char *text = "Hello";
+  jstring result = env->NewStringUTF(text);
+  return result;
+}
+
+JNIEXPORT jstring JNICALL Java_test1java_TestNative_speak__Ljava_lang_String_2(
+    JNIEnv *env, jobject obj, jstring str) {
+  const char *text = env->GetStringUTFChars(str, 0);
+  int len = snprintf(NULL, 0, "Hello %s", text) + 1;
+  char *result = (char *)malloc(len);
+  snprintf(result, len, "Hello %s", text);
+  env->ReleaseStringUTFChars(str, text);
+  jstring result1 = env->NewStringUTF(result);
+  free(result);
+  return result1;
+}
+
+JNIEXPORT void JNICALL Java_test1java_TestNative_nativePrintln(JNIEnv *env,
+                                                               jobject obj,
+                                                               jstring str) {
+  const char *text = env->GetStringUTFChars(str, 0);
+  printf("%s\n", text);
+}
+
+JNIEXPORT jstring JNICALL Java_test1java_TestNative_nativeConcat(JNIEnv *env,
+                                                                 jobject obj,
+                                                                 jstring str1,
+                                                                 jstring str2) {
+  const char *text1 = env->GetStringUTFChars(str1, 0);
+  const char *text2 = env->GetStringUTFChars(str2, 0);
+  int len = snprintf(NULL, 0, "%s%s", text1, text2) + 1;
+
+  char *result = (char *)malloc(len);
+  snprintf(result, len, "%s%s", text1, text2);
+  env->ReleaseStringUTFChars(str1, text1);
+  env->ReleaseStringUTFChars(str2, text2);
+  jstring result1 = env->NewStringUTF(result);
+  free(result);
+  return result1;
 }

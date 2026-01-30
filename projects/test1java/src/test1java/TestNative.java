@@ -32,8 +32,6 @@ public class TestNative {
 
     public native double max(double[][] elements);
 
-    //
-
     public native String speak();
 
     public native String speak(String s);
@@ -41,6 +39,9 @@ public class TestNative {
     public native void nativePrintln(String s);
 
     public native String nativeConcat(String s1, String s2);
+
+    //
+
 
     public native void printPerson(Person person);
 
@@ -55,13 +56,13 @@ public class TestNative {
         System.out.println("multiply(1.1, 2.2)=" + testNative.multiply(1.1, 2.2));
         System.out.println("ones(3, 10): " + Arrays.deepToString(testNative.ones(3, 10)));
         System.out.println("max([[3, 55] [10, 76]]): " + testNative.max(new double[][]{{3, 55}, {10, 76}}));
-
         System.out.println("speak()=" + testNative.speak());
         System.out.println("speak(\"abc\")=" + testNative.speak("abc"));
+        testNative.nativePrintln("test native print"); // will be printed at the end
+        System.out.println(testNative.nativeConcat("test1-", "test2"));
+
         System.out.println("Dog.bark()=" + (new Dog().bark()));
         System.out.println("Animal.bark()=" + (new Animal().bark()));
-        testNative.nativePrintln("test native print");
-        System.out.println(testNative.nativeConcat("test1-", "test2"));
 
         playWithReflection();
 
