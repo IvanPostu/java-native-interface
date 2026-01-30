@@ -167,3 +167,44 @@ JNIEXPORT void JNICALL Java_test1java_TestNative_printPerson(
   printf("name=%s, age=%d\n", name_arr, age);
   env->ReleaseStringUTFChars(name, name_arr);
 }
+
+JNIEXPORT void JNICALL
+Java_test1java_TestNative_printStaticPerson(JNIEnv *env, jclass TestNative) {
+
+  jclass person_class = env->FindClass("test1java/Person");
+  jfieldID fieldId1 = env->GetStaticFieldID(person_class, "EXAMPLE_FIELD",
+                                            "Ljava/lang/String;");
+  jfieldID fieldId2 =
+      env->GetStaticFieldID(person_class, "EXAMPLE_INT_FIELD", "I");
+
+  jobject EXAMPLE_FIELD = env->GetStaticObjectField(person_class, fieldId1);
+  jint EXAMPLE_INT_FIELD = env->GetStaticIntField(person_class, fieldId2);
+  jstring exampleFieldStr = (jstring)EXAMPLE_FIELD;
+
+  const char *exampleFieldCStr = env->GetStringUTFChars(exampleFieldStr, 0);
+
+  printf("EXAMPLE_FIELD=%s, EXAMPLE_INT_FIELD=%d\n", exampleFieldCStr,
+         EXAMPLE_INT_FIELD);
+
+  env->ReleaseStringUTFChars(exampleFieldStr, exampleFieldCStr);
+}
+
+JNIEXPORT void JNICALL Java_test1java_TestNative_setPerson(
+    JNIEnv *env, jclass TestNative, jobject obj, jstring name, jint age,
+    jstring exampleStaticValue, jint staticIntValue) {
+
+  jclass person_class = env->FindClass("test1java/Person");
+
+  jfieldID fieldId1 = env->GetStaticFieldID(person_class, "EXAMPLE_FIELD",
+                                            "Ljava/lang/String;");
+  jfieldID fieldId2 =
+      env->GetStaticFieldID(person_class, "EXAMPLE_INT_FIELD", "I");
+  env->SetStaticObjectField(person_class, fieldId1, exampleStaticValue);
+  env->SetStaticIntField(person_class, fieldId2, staticIntValue);
+
+  jfieldID localFieldId1 =
+      env->GetFieldID(person_class, "name", "Ljava/lang/String;");
+  jfieldID localFieldId2 = env->GetFieldID(person_class, "age", "I");
+  env->SetObjectField(obj, localFieldId1, name);
+  env->SetIntField(obj, localFieldId2, age);
+}

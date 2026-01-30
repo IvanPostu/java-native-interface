@@ -106,10 +106,10 @@ JNIEXPORT void JNICALL Java_test1java_TestNative_printStaticPerson
 /*
  * Class:     test1java_TestNative
  * Method:    setPerson
- * Signature: (Ltest1java/Person;Ljava/lang/String;ILjava/lang/String;)V
+ * Signature: (Ltest1java/Person;Ljava/lang/String;ILjava/lang/String;I)V
  */
 JNIEXPORT void JNICALL Java_test1java_TestNative_setPerson
-  (JNIEnv *, jclass, jobject, jstring, jint, jstring);
+  (JNIEnv *, jclass, jobject, jstring, jint, jstring, jint);
 
 #ifdef __cplusplus
 }

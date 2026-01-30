@@ -46,7 +46,7 @@ public class TestNative {
 
     public static native void printStaticPerson();
 
-    public static native void setPerson(Person p, String name, int age, String exampleStaticValue);
+    public static native void setPerson(Person p, String name, int age, String exampleStaticValue, int staticIntValue);
 
     public static void main(String[] args) throws Exception {
         TestNative testNative = new TestNative();
@@ -69,8 +69,9 @@ public class TestNative {
 
         TestNative.printStaticPerson();
 
-        TestNative.setPerson(person, "H1", 9909, "11a11");
-        System.out.println("qqq3" + person + ", example=" + Person.EXAMPLE_FIELD);
+        System.out.printf("Person before call setPerson: %s%n", person);
+        TestNative.setPerson(person, "H1", 9909, "11a11", 33);
+        System.out.printf("Person after call setPerson: %s%n", person);
     }
 
     private static void loadLibrary() {
