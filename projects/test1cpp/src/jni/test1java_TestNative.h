@@ -41,22 +41,6 @@ JNIEXPORT jdouble JNICALL Java_test1java_TestNative_multiply
 
 /*
  * Class:     test1java_TestNative
- * Method:    speak
- * Signature: ()Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_test1java_TestNative_speak__
-  (JNIEnv *, jobject);
-
-/*
- * Class:     test1java_TestNative
- * Method:    speak
- * Signature: (Ljava/lang/String;)Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_test1java_TestNative_speak__Ljava_lang_String_2
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     test1java_TestNative
  * Method:    ones
  * Signature: (II)[[D
  */
@@ -70,6 +54,22 @@ JNIEXPORT jobjectArray JNICALL Java_test1java_TestNative_ones
  */
 JNIEXPORT jdouble JNICALL Java_test1java_TestNative_max
   (JNIEnv *, jobject, jobjectArray);
+
+/*
+ * Class:     test1java_TestNative
+ * Method:    speak
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_test1java_TestNative_speak__
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     test1java_TestNative
+ * Method:    speak
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_test1java_TestNative_speak__Ljava_lang_String_2
+  (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     test1java_TestNative

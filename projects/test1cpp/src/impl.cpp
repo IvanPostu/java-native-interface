@@ -30,7 +30,7 @@ JNIEXPORT jdouble JNICALL Java_test1java_TestNative_sumOfDoubleArray(
     JNIEnv *env, jobject obj, jdoubleArray jArray) {
 
   jint len = env->GetArrayLength(jArray);
-  jdouble *carr = (jdouble *)malloc(sizeof(jdouble) * len);
+  jdouble *carr = new jdouble[len];
 
   env->GetDoubleArrayRegion(jArray, 0, len, carr);
 
@@ -39,7 +39,7 @@ JNIEXPORT jdouble JNICALL Java_test1java_TestNative_sumOfDoubleArray(
     result += *(carr + i);
   }
 
-  free(carr);
+  delete[] carr;
   return result;
 }
 
@@ -49,4 +49,49 @@ JNIEXPORT jdouble JNICALL Java_test1java_TestNative_multiply(JNIEnv *env,
                                                              jdouble b) {
   jdouble result = a * b;
   return result;
+}
+
+JNIEXPORT jobjectArray JNICALL Java_test1java_TestNative_ones(JNIEnv *env,
+                                                              jobject obj,
+                                                              jint rows,
+                                                              jint cols) {
+
+  jclass double_array_class = env->FindClass("[D");
+  jobjectArray obj_array = env->NewObjectArray(rows, double_array_class, 0);
+
+  for (int k = 0; k < rows; k++) {
+    jdouble *carr = (jdouble *)malloc(sizeof(jdouble) * cols);
+    jdoubleArray jarray = env->NewDoubleArray(cols);
+
+    for (int i = 0; i < cols; i++) {
+      *(carr + i) = 1.0;
+    }
+    env->SetDoubleArrayRegion(jarray, 0, cols, carr);
+    env->SetObjectArrayElement(obj_array, k, jarray);
+
+    free(carr);
+  }
+  return obj_array;
+}
+
+JNIEXPORT jdouble JNICALL Java_test1java_TestNative_max(JNIEnv *env,
+                                                        jobject obj,
+                                                        jobjectArray arr) {
+  jdouble max_value = 0.0;
+  jint rows = env->GetArrayLength(arr);
+
+  for (int i = 0; i < rows; i++) {
+    jdoubleArray jarray = (jdoubleArray)(env->GetObjectArrayElement(arr, i));
+    jint columns = env->GetArrayLength(jarray);
+    jdouble *carray = new jdouble[columns];
+    env->GetDoubleArrayRegion(jarray, 0, columns, carray);
+    for (int k = 0; k < columns; k++) {
+      if (max_value < *(carray + k)) {
+        max_value = *(carray + k);
+      }
+    }
+    delete[] carray;
+  }
+
+  return max_value;
 }
