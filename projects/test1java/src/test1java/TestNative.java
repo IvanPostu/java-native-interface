@@ -50,6 +50,8 @@ public class TestNative {
 
     public static void main(String[] args) throws Exception {
         TestNative testNative = new TestNative();
+        System.out.println("isOdd(2)=" + testNative.isOdd(2));
+        System.out.println("isOdd(3)=" + testNative.isOdd(3));
         System.out.println("linspace(0, 20, 10): " + Arrays.toString(testNative.linspace(0.0, 20.0, 10)));
         System.out.println("sumOfDoubleArray(5.5, 10.25): " + testNative.sumOfDoubleArray(new double[]{5.5, 10.25}));
         System.out.println("multiply(1.1, 2.2)=" + testNative.multiply(1.1, 2.2));
