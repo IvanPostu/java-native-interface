@@ -79,8 +79,6 @@ nix-shell --run bash
   ```sh
   bash "$PROJECT_ROOT/projects/test1cpp/scripts/build-java-native-class.sh" "$PROJECT_ROOT/projects/test1java/src" "$PROJECT_ROOT/projects/test1cpp/src/jni"
 
-  # bash "$PROJECT_ROOT/projects/test1cpp/scripts/build-so.sh" "$PROJECT_ROOT/projects/test1cpp/src/jni" "$PROJECT_ROOT/projects/test1java/src/jni"
-
   g++ -fPIC -shared \
     "$PROJECT_ROOT/projects/test1cpp/src/jni/test1java_TestNative.h" \
     "$PROJECT_ROOT/projects/test1cpp/src/impl.cpp" \

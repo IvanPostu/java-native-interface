@@ -17,6 +17,22 @@ JNIEXPORT jboolean JNICALL Java_test1java_TestNative_isOdd
 
 /*
  * Class:     test1java_TestNative
+ * Method:    linspace
+ * Signature: (DDI)[D
+ */
+JNIEXPORT jdoubleArray JNICALL Java_test1java_TestNative_linspace
+  (JNIEnv *, jobject, jdouble, jdouble, jint);
+
+/*
+ * Class:     test1java_TestNative
+ * Method:    sumOfDoubleArray
+ * Signature: ([D)D
+ */
+JNIEXPORT jdouble JNICALL Java_test1java_TestNative_sumOfDoubleArray
+  (JNIEnv *, jobject, jdoubleArray);
+
+/*
+ * Class:     test1java_TestNative
  * Method:    multiply
  * Signature: (DD)D
  */
@@ -38,22 +54,6 @@ JNIEXPORT jstring JNICALL Java_test1java_TestNative_speak__
  */
 JNIEXPORT jstring JNICALL Java_test1java_TestNative_speak__Ljava_lang_String_2
   (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     test1java_TestNative
- * Method:    linspace
- * Signature: (DDI)[D
- */
-JNIEXPORT jdoubleArray JNICALL Java_test1java_TestNative_linspace
-  (JNIEnv *, jobject, jdouble, jdouble, jint);
-
-/*
- * Class:     test1java_TestNative
- * Method:    sumOfDoubleArray
- * Signature: ([D)D
- */
-JNIEXPORT jdouble JNICALL Java_test1java_TestNative_sumOfDoubleArray
-  (JNIEnv *, jobject, jdoubleArray);
 
 /*
  * Class:     test1java_TestNative

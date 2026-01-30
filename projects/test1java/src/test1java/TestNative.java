@@ -19,18 +19,18 @@ public class TestNative {
 
 	public native boolean isOdd(int num);
 
-	public native double multiply(double a, double b);
-
-	public native String speak();
-
-	public native String speak(String s);
-
 	// linspace(0,5,5) -> dx = (5-0)/4; [0, 0+dx, 0+2*dx, 0+3*dx, 0+4*dx]
 	// last element = start + (num-1)*dx -> dx=(end-start)/(num-1)
 	// (0, 10, num=5) = [ 0. 2.5 5. 7.5 10. ]
 	public native double[] linspace(double start, double end, int num);
 
 	public native double sumOfDoubleArray(double[] array);
+
+	public native double multiply(double a, double b);
+
+	public native String speak();
+
+	public native String speak(String s);
 
 	public native double[][] ones(int rows, int cols);
 
@@ -48,15 +48,14 @@ public class TestNative {
 
 	public static void main(String[] args) throws Exception {
 		TestNative testNative = new TestNative();
-		double result = testNative.multiply(1.1, 2.2);
+		System.out.println("linspace(0, 20, 10): " + Arrays.toString(testNative.linspace(0.0, 20.0, 10)));
+		System.out.println("sumOfDoubleArray(5.5, 10.25): " + testNative.sumOfDoubleArray(new double[] { 5.5, 10.25 }));
+		System.out.println("multiply(1.1, 2.2)=" + testNative.multiply(1.1, 2.2));
 
-		System.out.println("multiply(1.1, 2.2)=" + result);
 		System.out.println("speak()=" + testNative.speak());
 		System.out.println("speak(\"abc\")=" + testNative.speak("abc"));
 		System.out.println("Dog.bark()=" + (new Dog().bark()));
 		System.out.println("Animal.bark()=" + (new Animal().bark()));
-		System.out.println("linspace(0, 20, 10): " + Arrays.toString(testNative.linspace(0.0, 20.0, 10)));
-		System.out.println("sumOfDoubleArray(5.5, 10.25): " + testNative.sumOfDoubleArray(new double[] { 5.5, 10.25 }));
 		System.out.println("ones(3, 10): " + Arrays.deepToString(testNative.ones(3, 10)));
 		System.out.println("max([[3, 55] [10, 76]]): " + testNative.max(new double[][] { { 3, 55 }, { 10, 76 } }));
 		testNative.nativePrintln("test native print");
