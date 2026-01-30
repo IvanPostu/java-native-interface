@@ -40,10 +40,9 @@ public class TestNative {
 
     public native String nativeConcat(String s1, String s2);
 
-    //
-
-
     public native void printPerson(Person person);
+
+    //
 
     public static native void printStaticPerson();
 

@@ -149,3 +149,21 @@ JNIEXPORT jstring JNICALL Java_test1java_TestNative_nativeConcat(JNIEnv *env,
   free(result);
   return result1;
 }
+
+JNIEXPORT void JNICALL Java_test1java_TestNative_printPerson(
+    JNIEnv *env, jobject TestNativeClass, jobject person) {
+
+  jclass person_class = env->FindClass("test1java/Person");
+  jfieldID fieldId1 =
+      env->GetFieldID(person_class, "name", "Ljava/lang/String;");
+  jfieldID fieldId2 = env->GetFieldID(person_class, "age", "I");
+
+  jobject name_obj = env->GetObjectField(person, fieldId1);
+  jstring name = (jstring)name_obj;
+  jint age = env->GetIntField(person, fieldId2);
+
+  const char *name_arr = env->GetStringUTFChars(name, 0);
+
+  printf("name=%s, age=%d\n", name_arr, age);
+  env->ReleaseStringUTFChars(name, name_arr);
+}
