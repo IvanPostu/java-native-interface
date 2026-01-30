@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     test1java_TestNative
+ * Method:    isOdd
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_test1java_TestNative_isOdd
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     test1java_TestNative
  * Method:    multiply
  * Signature: (DD)D
  */

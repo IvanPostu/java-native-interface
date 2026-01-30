@@ -8,16 +8,16 @@ import test1java.example1.Animal;
 import test1java.example1.Dog;
 
 public class TestNative {
-	private static final String FULL_PATH = System.getenv("PROJECT_ROOT") + "/projects/test1java/src/jni";
-	private static final String DYNAMIC_LIB_NAME = "test1java_TestNative";
+	private static final String DYNAMIC_LIB_NAME = "impl";
 
 	static {
 		// System.load(FULL_PATH + "/" + "lib" + DYNAMIC_LIB_NAME + ".so");
 		// System.load("test1java_TestNative");
 		// "/jni/" + "lib" + DYNAMIC_LIB_NAME + ".so"
 		loadLibrary();
-
 	}
+
+	public native boolean isOdd(int num);
 
 	public native double multiply(double a, double b);
 
@@ -75,7 +75,8 @@ public class TestNative {
 
 	private static void loadLibrary() {
 		if (!JarUtils.isJar()) {
-			System.load(FULL_PATH + "/" + "lib" + DYNAMIC_LIB_NAME + ".so");
+			String fullPath = System.getenv("PROJECT_ROOT") + "/projects/test1java/src/jni";
+			System.load(fullPath + "/" + "lib" + DYNAMIC_LIB_NAME + ".so");
 			return;
 		}
 
