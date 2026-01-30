@@ -252,9 +252,22 @@ Java_test1java_TestNative_freeMemory(JNIEnv *env, jclass TestNative) {
   jobject runtime_object =
       env->CallStaticObjectMethod(runtime_class, getRuntimeMethodID);
 
-  jmethodID freeMethodID =
-      env->GetMethodID(runtime_class, "freeMemory", "()J");
+  jmethodID freeMethodID = env->GetMethodID(runtime_class, "freeMemory", "()J");
   jlong value = env->CallLongMethod(runtime_object, freeMethodID);
 
   return value;
+}
+
+JNIEXPORT jobject JNICALL Java_test1java_TestNative_createPerson(
+    JNIEnv *env, jclass TestNative, jstring name, jint age) {
+  jclass person_class = env->FindClass("test1java/Person");
+  jmethodID person_ctor_method_id =
+      env->GetMethodID(person_class, "<init>", "(Ljava/lang/String;)V");
+
+  jobject person = env->NewObject(person_class, person_ctor_method_id, name);
+
+  jfieldID localFieldId2 = env->GetFieldID(person_class, "age", "I");
+  env->SetIntField(person, localFieldId2, age);
+
+  return person;
 }

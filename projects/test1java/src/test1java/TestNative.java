@@ -4,6 +4,7 @@ import test1java.example1.Animal;
 import test1java.example1.Dog;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -55,6 +56,8 @@ public class TestNative {
 
     public static native long freeMemory();
 
+    public static native Person createPerson(String name, int age);
+
     public static void main(String[] args) throws Exception {
         TestNative testNative = new TestNative();
         System.out.println("isOdd(2)=" + testNative.isOdd(2));
@@ -73,17 +76,24 @@ public class TestNative {
 
         playWithReflection();
 
-        Person person = new Person("Bob");
-        testNative.printPerson(person);
+        {
+            Person person = new Person("Bob");
+            testNative.printPerson(person);
 
-        TestNative.printStaticPerson();
+            TestNative.printStaticPerson();
 
-        System.out.printf("Person before call setPerson: %s%n", person);
-        TestNative.setPerson(person, "H1", 9909, "11a11", 33);
-        System.out.printf("Person after call setPerson: %s%n", person);
+            System.out.printf("Person before call setPerson: %s%n", person);
+            TestNative.setPerson(person, "H1", 9909, "11a11", 33);
+            System.out.printf("Person after call setPerson: %s%n", person);
 
-        TestNative.callPersonMethods(person);
+            TestNative.callPersonMethods(person);
+        }
         System.out.printf("freed:%s bytes%n", TestNative.freeMemory() / (1024 * 1024));
+
+        {
+            Person person = TestNative.createPerson("Jim", 76);
+            System.out.println(person);
+        }
     }
 
     private static void loadLibrary() {
@@ -102,7 +112,7 @@ public class TestNative {
 
     @SuppressWarnings({"unchecked"})
     private static void playWithReflection()
-            throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+            throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
 
         System.out.println("Calling: playWithReflection get ===========");
 
@@ -162,6 +172,13 @@ public class TestNative {
             Method m1 = Person.class.getDeclaredMethod("getExampleField", int.class);
             Object returned = m1.invoke(null, 90);
             System.out.println("Reflection call getExampleField = " + returned);
+        }
+
+        {
+            // create person via reflection
+            Constructor<Person> constructor = Person.class.getDeclaredConstructor(String.class);
+            Person person1 = constructor.newInstance("Vasia");
+            System.out.println(person1);
         }
     }
 

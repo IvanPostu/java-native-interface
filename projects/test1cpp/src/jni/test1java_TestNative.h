@@ -135,6 +135,14 @@ JNIEXPORT void JNICALL Java_test1java_TestNative_callPersonMethods
 JNIEXPORT jlong JNICALL Java_test1java_TestNative_freeMemory
   (JNIEnv *, jclass);
 
+/*
+ * Class:     test1java_TestNative
+ * Method:    createPerson
+ * Signature: (Ljava/lang/String;I)Ltest1java/Person;
+ */
+JNIEXPORT jobject JNICALL Java_test1java_TestNative_createPerson
+  (JNIEnv *, jclass, jstring, jint);
+
 #ifdef __cplusplus
 }
 #endif
