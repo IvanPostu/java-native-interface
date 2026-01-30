@@ -4,6 +4,16 @@
 #include <cstdio>
 #include <cstdlib>
 
+JNIEXPORT jstring JNICALL Java_test1java_example1_Animal_bark(JNIEnv *env,
+                                                              jobject obj) {
+  return env->NewStringUTF("Animal bark");
+}
+
+JNIEXPORT jstring JNICALL Java_test1java_example1_Dog_bark(JNIEnv *env,
+                                                           jobject obj) {
+  return env->NewStringUTF("Dog bark");
+}
+
 JNIEXPORT jboolean JNICALL Java_test1java_TestNative_isOdd(JNIEnv *env,
                                                            jobject obj,
                                                            jint num) {

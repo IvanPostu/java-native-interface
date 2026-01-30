@@ -60,7 +60,6 @@ public class TestNative {
         System.out.println("speak(\"abc\")=" + testNative.speak("abc"));
         testNative.nativePrintln("test native print"); // will be printed at the end
         System.out.println(testNative.nativeConcat("test1-", "test2"));
-
         System.out.println("Dog.bark()=" + (new Dog().bark()));
         System.out.println("Animal.bark()=" + (new Animal().bark()));
 

@@ -80,7 +80,7 @@ nix-shell --run bash
   bash "$PROJECT_ROOT/projects/test1cpp/scripts/build-java-native-class.sh" "$PROJECT_ROOT/projects/test1java/src" "$PROJECT_ROOT/projects/test1cpp/src/jni"
 
   g++ -fPIC -shared \
-    "$PROJECT_ROOT/projects/test1cpp/src/jni/test1java_TestNative.h" \
+    -I"$PROJECT_ROOT/projects/test1cpp/src/jni" \
     "$PROJECT_ROOT/projects/test1cpp/src/impl.cpp" \
     -o "$PROJECT_ROOT/projects/test1java/src/jni/libimpl.so"
 
