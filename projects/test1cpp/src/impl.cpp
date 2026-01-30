@@ -1,9 +1,11 @@
 #include "./jni/test1java_TestNative.h"
 #include "./jni/test1java_example1_Animal.h"
 #include "./jni/test1java_example1_Dog.h"
-#include <cstddef>
+#include "./jni/test1java_AiryFunction.h"
 #include <cstdio>
 #include <cstdlib>
+#include <gsl/gsl_mode.h>
+#include <gsl/gsl_sf_airy.h>
 
 static jfieldID PERSON_INSTANCE_AGE_FIELD_ID = NULL;
 
@@ -270,4 +272,16 @@ JNIEXPORT jobject JNICALL Java_test1java_TestNative_createPerson(
   env->SetIntField(person, localFieldId2, age);
 
   return person;
+}
+
+JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_ai(JNIEnv *env,
+                                                         jclass AiryFunction,
+                                                         jdouble x) {
+  return gsl_sf_airy_Ai(x, GSL_PREC_DOUBLE);
+}
+
+JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_bi(JNIEnv *env,
+                                                         jclass AiryFunction,
+                                                         jdouble x) {
+  return gsl_sf_airy_Bi(x, GSL_PREC_DOUBLE);
 }

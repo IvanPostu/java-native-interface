@@ -4,6 +4,18 @@
 
 ```sh
 nix-shell --run bash
+
+# build gsl (Gnu Scientific Library)
+
+cd external/gsl/
+
+git submodule init
+git submodule update
+
+mkdir build
+cd build/
+cmake .. -G"Unix Makefiles"
+make
 ```
 
 ## General
@@ -76,18 +88,21 @@ nix-shell --run bash
 - Java requires `field.setAccessible(true)` in order to access a private field
   - JNI uses unprotected approach, it can easily access private fields
 
-  ```sh
-  bash "$PROJECT_ROOT/projects/test1cpp/scripts/build-java-native-class.sh" "$PROJECT_ROOT/projects/test1java/src" "$PROJECT_ROOT/projects/test1cpp/src/jni"
+```sh
+bash "$PROJECT_ROOT/projects/test1cpp/scripts/build-java-native-class.sh" "$PROJECT_ROOT/projects/test1java/src" "$PROJECT_ROOT/projects/test1cpp/src/jni"
 
-  g++ -fPIC -shared \
-    -I"$PROJECT_ROOT/projects/test1cpp/src/jni" \
-    "$PROJECT_ROOT/projects/test1cpp/src/impl.cpp" \
-    -o "$PROJECT_ROOT/projects/test1java/src/jni/libimpl.so"
+g++ -fPIC -shared \
+  -I"$PROJECT_ROOT/projects/test1cpp/src/jni" \
+  -I"$PROJECT_ROOT/external/gsl/build" \
+  -L"$PROJECT_ROOT/external/gsl/build" \
+  "$PROJECT_ROOT/projects/test1cpp/src/impl.cpp" \
+  -Wl,-Bstatic -lgsl -Wl,-Bdynamic \
+  -o "$PROJECT_ROOT/projects/test1java/src/jni/libimpl.so"
 
-  bash "$PROJECT_ROOT/projects/test1cpp/scripts/build-jar.sh" "test1java.TestNative" "$PROJECT_ROOT/projects/test1java/src" "$PROJECT_ROOT/projects/test1java/build"
+bash "$PROJECT_ROOT/projects/test1cpp/scripts/build-jar.sh" "test1java.TestNative" "$PROJECT_ROOT/projects/test1java/src" "$PROJECT_ROOT/projects/test1java/build"
 
-  java -jar "$PROJECT_ROOT/projects/test1java/build/TestNative.jar"
-  ```
+java -jar "$PROJECT_ROOT/projects/test1java/build/TestNative.jar"
+```
 
 ## Eclipse setup - cdt (C Development Tool) & (Enterprise Java Plugin)
 
@@ -135,6 +150,9 @@ export CPLUS_INCLUDE_PATH=/nix/store/abcd1234-gcc-13.2.0/include/c++/13.2.0:/nix
 
 - <https://github.com/adamheinrich/native-utils/blob/master/src/main/java/cz/adamh/utils/NativeUtils.java>
 - <https://www.reddit.com/r/vsCodium/comments/w9kaag/what_is_the_equivalent_of_the_ms_c_extension_with/>
+- <https://www.gnu.org/software/gsl/#documentation>
+- <https://ftp.gnu.org/gnu/gsl/>
+- <https://www.w3schools.com/git/git_submodules.asp>
 
 ## TODO
 

@@ -59,6 +59,18 @@ public class TestNative {
     public static native Person createPerson(String name, int age);
 
     public static void main(String[] args) throws Exception {
+//        demo1();
+        demo2();
+    }
+
+    private static void demo2() {
+        double x = -1.1;
+        double result = AiryFunction.ai(x);
+        System.out.println(result);
+        System.out.println(AiryFunction.bi(x));
+    }
+
+    private static void demo1()  throws Exception{
         TestNative testNative = new TestNative();
         System.out.println("isOdd(2)=" + testNative.isOdd(2));
         System.out.println("isOdd(3)=" + testNative.isOdd(3));

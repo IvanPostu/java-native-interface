@@ -1,0 +1,3 @@
+[submodule "external/gsl"]
+	path = external/gsl
+	url = git@github.com:ampl/gsl.git
