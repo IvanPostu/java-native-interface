@@ -53,6 +53,8 @@ public class TestNative {
 
     public static native void callPersonMethods(Person person);
 
+    public static native long freeMemory();
+
     public static void main(String[] args) throws Exception {
         TestNative testNative = new TestNative();
         System.out.println("isOdd(2)=" + testNative.isOdd(2));
@@ -81,6 +83,7 @@ public class TestNative {
         System.out.printf("Person after call setPerson: %s%n", person);
 
         TestNative.callPersonMethods(person);
+        System.out.printf("freed:%s bytes%n", TestNative.freeMemory() / (1024 * 1024));
     }
 
     private static void loadLibrary() {
@@ -144,6 +147,7 @@ public class TestNative {
 
         {
             // getDeclaredMethod(methodName, argsTypes) in order select from overloaded ones
+            // call instance method using reflection
             Method m1 = Person.class.getDeclaredMethod("getName", int.class);
             Object returned = m1.invoke(person, 99);
             System.out.println("Reflection call getName = " + returned);
@@ -154,6 +158,7 @@ public class TestNative {
             System.out.println("Reflection call getName = " + returned);
         }
         {
+            // call static method using reflection
             Method m1 = Person.class.getDeclaredMethod("getExampleField", int.class);
             Object returned = m1.invoke(null, 90);
             System.out.println("Reflection call getExampleField = " + returned);

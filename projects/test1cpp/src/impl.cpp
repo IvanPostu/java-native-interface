@@ -243,3 +243,18 @@ JNIEXPORT void JNICALL Java_test1java_TestNative_callPersonMethods(
   printf("m2result=%s\n", m2resultCStr);
   env->ReleaseStringUTFChars(m2result, m2resultCStr);
 }
+
+JNIEXPORT jlong JNICALL
+Java_test1java_TestNative_freeMemory(JNIEnv *env, jclass TestNative) {
+  jclass runtime_class = env->FindClass("java/lang/Runtime");
+  jmethodID getRuntimeMethodID = env->GetStaticMethodID(
+      runtime_class, "getRuntime", "()Ljava/lang/Runtime;");
+  jobject runtime_object =
+      env->CallStaticObjectMethod(runtime_class, getRuntimeMethodID);
+
+  jmethodID freeMethodID =
+      env->GetMethodID(runtime_class, "freeMemory", "()J");
+  jlong value = env->CallLongMethod(runtime_object, freeMethodID);
+
+  return value;
+}
