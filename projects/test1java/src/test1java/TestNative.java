@@ -5,6 +5,8 @@ import test1java.example1.Dog;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public class TestNative {
@@ -49,6 +51,8 @@ public class TestNative {
 
     public static native void init();
 
+    public static native void callPersonMethods(Person person);
+
     public static void main(String[] args) throws Exception {
         TestNative testNative = new TestNative();
         System.out.println("isOdd(2)=" + testNative.isOdd(2));
@@ -75,6 +79,8 @@ public class TestNative {
         System.out.printf("Person before call setPerson: %s%n", person);
         TestNative.setPerson(person, "H1", 9909, "11a11", 33);
         System.out.printf("Person after call setPerson: %s%n", person);
+
+        TestNative.callPersonMethods(person);
     }
 
     private static void loadLibrary() {
@@ -93,7 +99,7 @@ public class TestNative {
 
     @SuppressWarnings({"unchecked"})
     private static void playWithReflection()
-            throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+            throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
         System.out.println("Calling: playWithReflection get ===========");
 
@@ -134,6 +140,24 @@ public class TestNative {
         System.out.println("qqq1" + p2);
         System.out.println("qqq2" + Person.EXAMPLE_FIELD);
 
+        // call method using reflection
+
+        {
+            // getDeclaredMethod(methodName, argsTypes) in order select from overloaded ones
+            Method m1 = Person.class.getDeclaredMethod("getName", int.class);
+            Object returned = m1.invoke(person, 99);
+            System.out.println("Reflection call getName = " + returned);
+        }
+        {
+            Method m1 = Person.class.getDeclaredMethod("getName");
+            Object returned = m1.invoke(person);
+            System.out.println("Reflection call getName = " + returned);
+        }
+        {
+            Method m1 = Person.class.getDeclaredMethod("getExampleField", int.class);
+            Object returned = m1.invoke(null, 90);
+            System.out.println("Reflection call getExampleField = " + returned);
+        }
     }
 
     private static void setPrivateField(Field field, Object fieldOwner, Object value)

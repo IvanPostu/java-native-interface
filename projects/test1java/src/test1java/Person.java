@@ -12,6 +12,18 @@ public class Person {
         this.name = name;
     }
 
+    public String getName(int i) {
+        return name + " " + i;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public static String getExampleField(int i) {
+        return EXAMPLE_FIELD + " " + i;
+    }
+
     @Override
     public String toString() {
         return String.format("name=%s,age=%s,EXAMPLE_FIELD=%s,EXAMPLE_INT_FIELD=%s",

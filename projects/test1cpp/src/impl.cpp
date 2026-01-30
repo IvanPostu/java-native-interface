@@ -221,3 +221,25 @@ JNIEXPORT void JNICALL Java_test1java_TestNative_init(JNIEnv *env,
   jclass person_class = env->FindClass("test1java/Person");
   PERSON_INSTANCE_AGE_FIELD_ID = env->GetFieldID(person_class, "age", "I");
 }
+
+JNIEXPORT void JNICALL Java_test1java_TestNative_callPersonMethods(
+    JNIEnv *env, jclass TestNative, jobject person) {
+
+  jclass person_class = env->GetObjectClass(person);
+
+  jmethodID getNameWithIntParamMethodId =
+      env->GetMethodID(person_class, "getName", "(I)Ljava/lang/String;");
+  jstring m1result =
+      (jstring)(env->CallObjectMethod(person, getNameWithIntParamMethodId, 99));
+  const char *m1resultCStr = env->GetStringUTFChars(m1result, 0);
+  printf("m1result=%s\n", m1resultCStr);
+  env->ReleaseStringUTFChars(m1result, m1resultCStr);
+
+  jmethodID getExampleFieldWithIntParamMethodId = env->GetStaticMethodID(
+      person_class, "getExampleField", "(I)Ljava/lang/String;");
+  jstring m2result = (jstring)(env->CallStaticObjectMethod(
+      person_class, getExampleFieldWithIntParamMethodId, 99));
+  const char *m2resultCStr = env->GetStringUTFChars(m2result, 0);
+  printf("m2result=%s\n", m2resultCStr);
+  env->ReleaseStringUTFChars(m2result, m2resultCStr);
+}
