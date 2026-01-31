@@ -74,11 +74,19 @@ public class TestNative {
 
     public static native void printConstants();
 
+    public static native double azabs(double zr, double zi);
+
     public static void main(String[] args) throws Exception {
 //        demo1();
 //        demo2();
 //        demo3();
-        demo4();
+//        demo4();
+        demo5();
+    }
+
+    private static void demo5() {
+        // call fortran impl through JNI
+        System.out.println(azabs(3.0, 4.0));
     }
 
     private static void demo4() throws Exception {

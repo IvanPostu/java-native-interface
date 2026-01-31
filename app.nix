@@ -6,6 +6,7 @@ pkgs.mkShell {
   name = "app-shell";
 
   buildInputs = [
+    pkgs.gfortran14
     pkgs.cmake
     pkgs.clang-tools
     pkgs.gcc13.cc

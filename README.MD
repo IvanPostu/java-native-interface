@@ -16,6 +16,25 @@ mkdir build
 cd build/
 cmake .. -G"Unix Makefiles"
 make
+
+# build .h files based on java source files
+bash "$PROJECT_ROOT/projects/test1cpp/scripts/build-java-native-class.sh" "$PROJECT_ROOT/projects/test1java/src" "$PROJECT_ROOT/projects/test1cpp/src/jni"
+
+# build fortran obj file
+gfortran -c "$PROJECT_ROOT/projects/test1cpp/src/zabs.f" -o "$PROJECT_ROOT/projects/test1cpp/fortran_obj/zabs.o"
+
+g++ -fPIC -shared \
+  -I"$PROJECT_ROOT/projects/test1cpp/src/jni" \
+  -I"$PROJECT_ROOT/external/gsl/build" \
+  -L"$PROJECT_ROOT/external/gsl/build" \
+  "$PROJECT_ROOT/projects/test1cpp/src/impl.cpp" \
+  "$PROJECT_ROOT/projects/test1cpp/fortran_obj/zabs.o" \
+  -Wl,-Bstatic -lgsl -Wl,-Bdynamic \
+  -o "$PROJECT_ROOT/projects/test1java/src/jni/libimpl.so"
+
+bash "$PROJECT_ROOT/projects/test1cpp/scripts/build-jar.sh" "test1java.TestNative" "$PROJECT_ROOT/projects/test1java/src" "$PROJECT_ROOT/projects/test1java/build"
+
+java -jar "$PROJECT_ROOT/projects/test1java/build/TestNative.jar"
 ```
 
 ## General
@@ -87,22 +106,6 @@ make
   - java heap is managed by GC while native heap is managed manually
 - Java requires `field.setAccessible(true)` in order to access a private field
   - JNI uses unprotected approach, it can easily access private fields
-
-```sh
-bash "$PROJECT_ROOT/projects/test1cpp/scripts/build-java-native-class.sh" "$PROJECT_ROOT/projects/test1java/src" "$PROJECT_ROOT/projects/test1cpp/src/jni"
-
-g++ -fPIC -shared \
-  -I"$PROJECT_ROOT/projects/test1cpp/src/jni" \
-  -I"$PROJECT_ROOT/external/gsl/build" \
-  -L"$PROJECT_ROOT/external/gsl/build" \
-  "$PROJECT_ROOT/projects/test1cpp/src/impl.cpp" \
-  -Wl,-Bstatic -lgsl -Wl,-Bdynamic \
-  -o "$PROJECT_ROOT/projects/test1java/src/jni/libimpl.so"
-
-bash "$PROJECT_ROOT/projects/test1cpp/scripts/build-jar.sh" "test1java.TestNative" "$PROJECT_ROOT/projects/test1java/src" "$PROJECT_ROOT/projects/test1java/build"
-
-java -jar "$PROJECT_ROOT/projects/test1java/build/TestNative.jar"
-```
 
 ## Eclipse setup - cdt (C Development Tool) & (Enterprise Java Plugin)
 

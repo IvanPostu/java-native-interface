@@ -189,6 +189,14 @@ JNIEXPORT void JNICALL Java_test1java_TestNative_printNameMethod
 JNIEXPORT void JNICALL Java_test1java_TestNative_printConstants
   (JNIEnv *, jclass);
 
+/*
+ * Class:     test1java_TestNative
+ * Method:    azabs
+ * Signature: (DD)D
+ */
+JNIEXPORT jdouble JNICALL Java_test1java_TestNative_azabs
+  (JNIEnv *, jclass, jdouble, jdouble);
+
 #ifdef __cplusplus
 }
 #endif

@@ -403,3 +403,16 @@ Java_test1java_TestNative_printConstants(JNIEnv *env, jclass TestNative) {
   printf("VALUE=%li,PRICE=%f,IS_READY=%li\n", test1java_TestNative_VALUE,
          test1java_TestNative_PRICE, test1java_TestNative_IS_READY);
 }
+
+// Fortran function
+extern "C" double azabs_(double *, double *);
+
+JNIEXPORT jdouble JNICALL Java_test1java_TestNative_azabs(JNIEnv *env,
+                                                          jclass TestNative,
+                                                          jdouble jzr,
+                                                          jdouble jzi) {
+  double zr = jzr;
+  double zi = jzi;
+  double result = azabs_(&zr, &zi);
+  return (jdouble)result;
+}
