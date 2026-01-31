@@ -106,6 +106,9 @@ java -jar "$PROJECT_ROOT/projects/test1java/build/TestNative.jar"
   - java heap is managed by GC while native heap is managed manually
 - Java requires `field.setAccessible(true)` in order to access a private field
   - JNI uses unprotected approach, it can easily access private fields
+- Why on header file generation/name generation based on class name `$` is replaced with 00024?
+  - because $'s representation in utf16 is 00024
+- Java can generate header files based on .class files
 
 ## Eclipse setup - cdt (C Development Tool) & (Enterprise Java Plugin)
 
