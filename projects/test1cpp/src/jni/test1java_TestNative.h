@@ -197,6 +197,22 @@ JNIEXPORT void JNICALL Java_test1java_TestNative_printConstants
 JNIEXPORT jdouble JNICALL Java_test1java_TestNative_azabs
   (JNIEnv *, jclass, jdouble, jdouble);
 
+/*
+ * Class:     test1java_TestNative
+ * Method:    createInner
+ * Signature: (Ltest1java/TestNative;)Ltest1java/TestNative/InnerClass;
+ */
+JNIEXPORT jobject JNICALL Java_test1java_TestNative_createInner
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     test1java_TestNative
+ * Method:    createNested
+ * Signature: ()Ltest1java/TestNative/NestedClass;
+ */
+JNIEXPORT jobject JNICALL Java_test1java_TestNative_createNested
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

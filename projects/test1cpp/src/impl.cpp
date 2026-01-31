@@ -416,3 +416,24 @@ JNIEXPORT jdouble JNICALL Java_test1java_TestNative_azabs(JNIEnv *env,
   double result = azabs_(&zr, &zi);
   return (jdouble)result;
 }
+
+JNIEXPORT jobject JNICALL Java_test1java_TestNative_createInner(
+    JNIEnv *env, jclass TestNative, jobject testNativeInstance) {
+  jclass nested_class = env->FindClass("test1java/TestNative$InnerClass");
+  jmethodID ctor_id = env->GetMethodID(
+      nested_class, "<init>", "(Ltest1java/TestNative;Ljava/lang/String;)V");
+  jstring jstr = env->NewStringUTF("Hello from JNI");
+  jobject inner_instance =
+      env->NewObject(nested_class, ctor_id, testNativeInstance, jstr);
+  return inner_instance;
+}
+
+JNIEXPORT jobject JNICALL
+Java_test1java_TestNative_createNested(JNIEnv *env, jclass TestNative) {
+  jclass nested_class = env->FindClass("test1java/TestNative$NestedClass");
+  jmethodID ctor_id =
+      env->GetMethodID(nested_class, "<init>", "(Ljava/lang/String;)V");
+  jstring jstr = env->NewStringUTF("Hello from JNI");
+  jobject nested_instance = env->NewObject(nested_class, ctor_id, jstr);
+  return nested_instance;
+}

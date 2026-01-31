@@ -74,14 +74,30 @@ public class TestNative {
 
     public static native void printConstants();
 
+    // Fortran impl
     public static native double azabs(double zr, double zi);
+
+    public static native TestNative.InnerClass createInner(TestNative testNative);
+
+    public static native TestNative.NestedClass createNested();
 
     public static void main(String[] args) throws Exception {
 //        demo1();
 //        demo2();
 //        demo3();
 //        demo4();
-        demo5();
+//        demo5();
+        demo6();
+    }
+
+    private static void demo6() {
+        InnerClass inner = new TestNative().new InnerClass("q1");
+        NestedClass nested = new TestNative.NestedClass("q2");
+        System.out.printf("inner=%s, nested=%s %n", inner, nested);
+
+        inner = createInner(new TestNative());
+        nested = createNested();
+        System.out.printf("inner=%s, nested=%s %n", inner, nested);
     }
 
     private static void demo5() {
@@ -255,6 +271,33 @@ public class TestNative {
             field.set(fieldOwner, value);
         } finally {
             field.setAccessible(initialAccessibility);
+        }
+    }
+
+
+    public class InnerClass {
+        private final String title;
+
+        public InnerClass(String title) {
+            this.title = title;
+        }
+
+        @Override
+        public String toString() {
+            return "InnerClass: " + title;
+        }
+    }
+
+    public static class NestedClass {
+        private final String title;
+
+        public NestedClass(String title) {
+            this.title = title;
+        }
+
+        @Override
+        public String toString() {
+            return "NestedClass: " + title;
         }
     }
 
