@@ -143,6 +143,38 @@ JNIEXPORT jlong JNICALL Java_test1java_TestNative_freeMemory
 JNIEXPORT jobject JNICALL Java_test1java_TestNative_createPerson
   (JNIEnv *, jclass, jstring, jint);
 
+/*
+ * Class:     test1java_TestNative
+ * Method:    animalSpeak
+ * Signature: (Ltest1java/example1/Animal;Z)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_test1java_TestNative_animalSpeak
+  (JNIEnv *, jclass, jobject, jboolean);
+
+/*
+ * Class:     test1java_TestNative
+ * Method:    printNumInfo
+ * Signature: (Ljava/lang/Number;)V
+ */
+JNIEXPORT void JNICALL Java_test1java_TestNative_printNumInfo
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     test1java_TestNative
+ * Method:    printNameField
+ * Signature: (Ltest1java/Person;Ljava/lang/reflect/Field;)V
+ */
+JNIEXPORT void JNICALL Java_test1java_TestNative_printNameField
+  (JNIEnv *, jclass, jobject, jobject);
+
+/*
+ * Class:     test1java_TestNative
+ * Method:    printNameMethod
+ * Signature: (Ltest1java/Person;Ljava/lang/reflect/Method;)V
+ */
+JNIEXPORT void JNICALL Java_test1java_TestNative_printNameMethod
+  (JNIEnv *, jclass, jobject, jobject);
+
 #ifdef __cplusplus
 }
 #endif

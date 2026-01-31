@@ -59,9 +59,42 @@ public class TestNative {
 
     public static native Person createPerson(String name, int age);
 
+    public static native String animalSpeak(Animal animal, boolean asVirtualCall);
+
+    public static native <T extends Number> void printNumInfo(T num);
+
+    public static native void printNameField(Person person, Field field);
+
+    public static native void printNameMethod(Person person, Method method);
+
     public static void main(String[] args) throws Exception {
 //        demo1();
-        demo2();
+//        demo2();
+//        demo3();
+        demo4();
+    }
+
+    private static void demo4() throws Exception {
+        Person person = new Person("Bob");
+        Class<Person> clazz = (Class<Person>) person.getClass();
+        Field f1 = clazz.getDeclaredField("name");
+        printNameField(person, f1);
+        Method m1 = Person.class.getDeclaredMethod("getName", int.class);
+        printNameMethod(person, m1);
+    }
+
+    private static void demo3() {
+        Animal a1 = new Animal();
+        Animal a2 = new Dog();
+
+        System.out.printf("%s%n", animalSpeak(a1, true)); // Animal: speak
+        System.out.printf("%s%n", animalSpeak(a1, false)); // Animal: speak
+        System.out.printf("%s%n", animalSpeak(a2, true)); // Dog: speak
+        System.out.printf("%s%n", animalSpeak(a2, false)); // Animal: speak
+
+        printNumInfo(Integer.valueOf(3322));
+        printNumInfo(Double.valueOf(2.21));
+        printNumInfo(Short.valueOf((short) 3));
     }
 
     private static void demo2() {
@@ -73,7 +106,7 @@ public class TestNative {
         System.out.println(Arrays.toString(AiryFunction.ai(List.of(x, x, x))));
     }
 
-    private static void demo1()  throws Exception{
+    private static void demo1() throws Exception {
         TestNative testNative = new TestNative();
         System.out.println("isOdd(2)=" + testNative.isOdd(2));
         System.out.println("isOdd(3)=" + testNative.isOdd(3));

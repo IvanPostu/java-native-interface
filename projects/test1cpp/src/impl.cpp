@@ -333,3 +333,67 @@ Java_test1java_AiryFunction_ai__Ljava_util_List_2(JNIEnv *env,
   free(arr);
   return jarray;
 }
+
+JNIEXPORT jstring JNICALL Java_test1java_TestNative_animalSpeak(
+    JNIEnv *env, jclass TestNative, jobject animal, jboolean asVirtualCall) {
+
+  static jclass animal_class = env->FindClass("test1java/example1/Animal");
+  // static jclass dog_class = env->FindClass("test1java/example1/Dog");
+  jclass object_class = env->GetObjectClass(animal);
+  static jmethodID animal_speak_id =
+      env->GetMethodID(animal_class, "speak", "()Ljava/lang/String;");
+
+  if (asVirtualCall) {
+    return (jstring)(env->CallObjectMethod(animal, animal_speak_id));
+  }
+
+  return (jstring)(env->CallNonvirtualObjectMethod(animal, object_class,
+                                                   animal_speak_id));
+}
+
+JNIEXPORT void JNICALL Java_test1java_TestNative_printNumInfo(JNIEnv *env,
+                                                              jclass TestNative,
+                                                              jobject num) {
+
+  static jclass number_class = env->FindClass("java/lang/Number");
+  static jclass double_class = env->FindClass("java/lang/Double");
+  static jclass integer_class = env->FindClass("java/lang/Integer");
+
+  jboolean is_int = env->IsInstanceOf(num, integer_class);
+  if (is_int) {
+    printf("num is int\n");
+    return;
+  }
+
+  jboolean is_double = env->IsInstanceOf(num, double_class);
+  if (is_double) {
+    printf("num is double\n");
+    return;
+  }
+  printf("num is neither double not int\n");
+}
+
+JNIEXPORT void JNICALL Java_test1java_TestNative_printNameField(
+    JNIEnv *env, jclass testNative, jobject person, jobject field) {
+  jclass person_class = env->FindClass("test1java/Person");
+  jclass field_class = env->FindClass("java/lang/reflect/Field");
+  jfieldID name_id = env->FromReflectedField(field);
+
+  jstring nameValue = (jstring)(env->GetObjectField(person, name_id));
+  const char *name_cstr = env->GetStringUTFChars(nameValue, 0);
+
+  printf("field name = %s", name_cstr);
+
+  env->ReleaseStringUTFChars(nameValue, name_cstr);
+}
+
+JNIEXPORT void JNICALL Java_test1java_TestNative_printNameMethod(
+    JNIEnv *env, jclass testNative, jobject person, jobject method) {
+  jmethodID get_name_id = env->FromReflectedMethod(method);
+  jstring result = (jstring)(env->CallObjectMethod(person, get_name_id, 99));
+  const char *name_cstr = env->GetStringUTFChars(result, 0);
+
+  printf("gotten field name = %s", name_cstr);
+
+  env->ReleaseStringUTFChars(result, name_cstr);
+}
