@@ -1,7 +1,7 @@
+#include "./jni/test1java_AiryFunction.h"
 #include "./jni/test1java_TestNative.h"
 #include "./jni/test1java_example1_Animal.h"
 #include "./jni/test1java_example1_Dog.h"
-#include "./jni/test1java_AiryFunction.h"
 #include <cstdio>
 #include <cstdlib>
 #include <gsl/gsl_mode.h>
@@ -274,14 +274,62 @@ JNIEXPORT jobject JNICALL Java_test1java_TestNative_createPerson(
   return person;
 }
 
-JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_ai(JNIEnv *env,
-                                                         jclass AiryFunction,
-                                                         jdouble x) {
+JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_ai__D(JNIEnv *env,
+                                                            jclass AiryFunction,
+                                                            jdouble x) {
   return gsl_sf_airy_Ai(x, GSL_PREC_DOUBLE);
 }
 
-JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_bi(JNIEnv *env,
-                                                         jclass AiryFunction,
-                                                         jdouble x) {
+JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_bi__D(JNIEnv *env,
+                                                            jclass AiryFunction,
+                                                            jdouble x) {
   return gsl_sf_airy_Bi(x, GSL_PREC_DOUBLE);
+}
+
+JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_ai__Ljava_lang_Double_2(
+    JNIEnv *env, jclass AiryFunction, jobject x) {
+
+  jclass jDoubleClass = env->FindClass("java/lang/Double");
+  jmethodID getDoubleMedhodId =
+      env->GetMethodID(jDoubleClass, "doubleValue", "()D");
+  jdouble doubleValue = env->CallDoubleMethod(x, getDoubleMedhodId);
+  return gsl_sf_airy_Ai(doubleValue, GSL_PREC_DOUBLE);
+}
+
+JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_bi__Ljava_lang_Double_2(
+    JNIEnv *env, jclass AiryFunction, jobject x) {
+  jclass jDoubleClass = env->GetObjectClass(x);
+  jmethodID getDoubleMedhodId =
+      env->GetMethodID(jDoubleClass, "doubleValue", "()D");
+  jdouble doubleValue = env->CallDoubleMethod(x, getDoubleMedhodId);
+  return gsl_sf_airy_Bi(doubleValue, GSL_PREC_DOUBLE);
+}
+
+JNIEXPORT jdoubleArray JNICALL
+Java_test1java_AiryFunction_ai__Ljava_util_List_2(JNIEnv *env,
+                                                  jclass AiryFunction,
+                                                  jobject list) {
+
+  static jclass list_class = env->FindClass("java/util/List");
+  static jmethodID get_id =
+      env->GetMethodID(list_class, "get", "(I)Ljava/lang/Object;");
+  static jmethodID size_id = env->GetMethodID(list_class, "size", "()I");
+  static jclass jDoubleClass = env->FindClass("java/lang/Double");
+  static jmethodID getDoubleMedhodId =
+      env->GetMethodID(jDoubleClass, "doubleValue", "()D");
+
+  jint len = env->CallIntMethod(list, size_id);
+
+  jdouble *arr = (jdouble *)malloc(sizeof(jdouble) * len);
+  for (int i = 0; i < len; i++) {
+    jobject doubleBoxed = env->CallObjectMethod(list, get_id, (jint)i);
+    jdouble doubleValue = env->CallDoubleMethod(doubleBoxed, getDoubleMedhodId);
+    jdouble calculated_value = gsl_sf_airy_Ai(doubleValue, GSL_PREC_DOUBLE);
+    *(arr + i) = calculated_value;
+  }
+
+  jdoubleArray jarray = env->NewDoubleArray(len);
+  env->SetDoubleArrayRegion(jarray, 0, len, arr);
+  free(arr);
+  return jarray;
 }

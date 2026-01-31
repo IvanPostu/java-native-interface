@@ -146,6 +146,11 @@ export CPLUS_INCLUDE_PATH=/nix/store/abcd1234-gcc-13.2.0/include/c++/13.2.0:/nix
 - <img src="./_forReadme/image copy.png" width="500px" />
 - add `clangd` language server - part of `clang-tools` package
 
+## IntelliJ
+
+- jclasslib - plugin for showing java bytecode of class
+- <img src="./_forReadme/image copy 2.png" width="500px" />
+
 ## References
 
 - <https://github.com/adamheinrich/native-utils/blob/master/src/main/java/cz/adamh/utils/NativeUtils.java>

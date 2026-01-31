@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 
 public class TestNative {
     private static final String DYNAMIC_LIB_NAME = "impl";
@@ -65,9 +66,11 @@ public class TestNative {
 
     private static void demo2() {
         double x = -1.1;
-        double result = AiryFunction.ai(x);
-        System.out.println(result);
+        System.out.println(AiryFunction.ai(x));
         System.out.println(AiryFunction.bi(x));
+        System.out.println(AiryFunction.ai(Double.valueOf(x)));
+        System.out.println(AiryFunction.bi(Double.valueOf(x)));
+        System.out.println(Arrays.toString(AiryFunction.ai(List.of(x, x, x))));
     }
 
     private static void demo1()  throws Exception{

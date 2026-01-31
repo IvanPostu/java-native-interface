@@ -12,7 +12,7 @@ extern "C" {
  * Method:    ai
  * Signature: (D)D
  */
-JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_ai
+JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_ai__D
   (JNIEnv *, jclass, jdouble);
 
 /*
@@ -20,8 +20,32 @@ JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_ai
  * Method:    bi
  * Signature: (D)D
  */
-JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_bi
+JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_bi__D
   (JNIEnv *, jclass, jdouble);
+
+/*
+ * Class:     test1java_AiryFunction
+ * Method:    ai
+ * Signature: (Ljava/lang/Double;)D
+ */
+JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_ai__Ljava_lang_Double_2
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     test1java_AiryFunction
+ * Method:    bi
+ * Signature: (Ljava/lang/Double;)D
+ */
+JNIEXPORT jdouble JNICALL Java_test1java_AiryFunction_bi__Ljava_lang_Double_2
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     test1java_AiryFunction
+ * Method:    ai
+ * Signature: (Ljava/util/List;)[D
+ */
+JNIEXPORT jdoubleArray JNICALL Java_test1java_AiryFunction_ai__Ljava_util_List_2
+  (JNIEnv *, jclass, jobject);
 
 #ifdef __cplusplus
 }
