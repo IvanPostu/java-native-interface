@@ -382,7 +382,7 @@ JNIEXPORT void JNICALL Java_test1java_TestNative_printNameField(
   jstring nameValue = (jstring)(env->GetObjectField(person, name_id));
   const char *name_cstr = env->GetStringUTFChars(nameValue, 0);
 
-  printf("field name = %s", name_cstr);
+  printf("field name = %s\n", name_cstr);
 
   env->ReleaseStringUTFChars(nameValue, name_cstr);
 }
@@ -393,7 +393,13 @@ JNIEXPORT void JNICALL Java_test1java_TestNative_printNameMethod(
   jstring result = (jstring)(env->CallObjectMethod(person, get_name_id, 99));
   const char *name_cstr = env->GetStringUTFChars(result, 0);
 
-  printf("gotten field name = %s", name_cstr);
+  printf("gotten field name = %s\n", name_cstr);
 
   env->ReleaseStringUTFChars(result, name_cstr);
+}
+
+JNIEXPORT void JNICALL
+Java_test1java_TestNative_printConstants(JNIEnv *env, jclass TestNative) {
+  printf("VALUE=%li,PRICE=%f,IS_READY=%li\n", test1java_TestNative_VALUE,
+         test1java_TestNative_PRICE, test1java_TestNative_IS_READY);
 }

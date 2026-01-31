@@ -67,6 +67,13 @@ public class TestNative {
 
     public static native void printNameMethod(Person person, Method method);
 
+    public static final int VALUE = 1;
+    public static final double PRICE = 2.5;
+    public static final boolean IS_READY = false;
+    public static final String NAME = "Bob";
+
+    public static native void printConstants();
+
     public static void main(String[] args) throws Exception {
 //        demo1();
 //        demo2();
@@ -81,6 +88,8 @@ public class TestNative {
         printNameField(person, f1);
         Method m1 = Person.class.getDeclaredMethod("getName", int.class);
         printNameMethod(person, m1);
+
+        printConstants();
     }
 
     private static void demo3() {

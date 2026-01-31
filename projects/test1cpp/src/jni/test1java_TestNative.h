@@ -7,6 +7,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#undef test1java_TestNative_VALUE
+#define test1java_TestNative_VALUE 1L
+#undef test1java_TestNative_PRICE
+#define test1java_TestNative_PRICE 2.5
+#undef test1java_TestNative_IS_READY
+#define test1java_TestNative_IS_READY 0L
 /*
  * Class:     test1java_TestNative
  * Method:    isOdd
@@ -174,6 +180,14 @@ JNIEXPORT void JNICALL Java_test1java_TestNative_printNameField
  */
 JNIEXPORT void JNICALL Java_test1java_TestNative_printNameMethod
   (JNIEnv *, jclass, jobject, jobject);
+
+/*
+ * Class:     test1java_TestNative
+ * Method:    printConstants
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_test1java_TestNative_printConstants
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }
