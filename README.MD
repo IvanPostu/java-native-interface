@@ -35,6 +35,16 @@ g++ -fPIC -shared \
 bash "$PROJECT_ROOT/projects/test1cpp/scripts/build-jar.sh" "test1java.TestNative" "$PROJECT_ROOT/projects/test1java/src" "$PROJECT_ROOT/projects/test1java/build"
 
 java -jar "$PROJECT_ROOT/projects/test1java/build/TestNative.jar"
+
+# maven generate project
+mvnw archetype:generate
+# select: org.apache.maven.archetypes:maven-archetype-quickstart
+# groupId: com.iv127.maven.demo2
+# artifactId: maven-demo2
+
+mvnw -f "$PROJECT_ROOT/projects/maven-demo2/pom.xml" package
+
+mvnw -f "$PROJECT_ROOT/projects/maven-demo2/pom.xml" exec:java "-Dexec.mainClass=com.iv127.maven.demo2.App"
 ```
 
 ## Core dump (caused by native code) - stacktrace
@@ -187,3 +197,4 @@ export CPLUS_INCLUDE_PATH=/nix/store/abcd1234-gcc-13.2.0/include/c++/13.2.0:/nix
 - <https://www.gnu.org/software/gsl/#documentation>
 - <https://ftp.gnu.org/gnu/gsl/>
 - <https://www.w3schools.com/git/git_submodules.asp>
+- https://www.baeldung.com/maven-archetype

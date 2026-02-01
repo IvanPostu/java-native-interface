@@ -32,5 +32,8 @@ pkgs.mkShell {
 
     export C_INCLUDE_PATH=$PROJECT_ROOT/external/gsl/build:$C_INCLUDE_PATH
     export CPLUS_INCLUDE_PATH=$PROJECT_ROOT/external/gsl/build:$CPLUS_INCLUDE_PATH
+  
+    chmod -R +x ${PROJECT_ROOT}/scripts
+    export PATH=${PROJECT_ROOT}/scripts:$PATH
   '';
 }
