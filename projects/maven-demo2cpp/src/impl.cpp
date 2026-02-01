@@ -2,11 +2,6 @@
 #include <cstdio>
 #include <cstdlib>
 
-JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_App_printHello(JNIEnv *env,
-                                                                 jclass App) {
-  printf("Hello\n");
-}
-
 JNIEXPORT void JNICALL
 Java_com_iv127_maven_demo2_App_doubleArrayAddViaRegionAccessor(
     JNIEnv *env, jclass App, jdoubleArray java_array, jdouble x) {
@@ -50,4 +45,28 @@ Java_com_iv127_maven_demo2_App_doubleArrayAddViaCriticalAccessor(
     *(current_arr + i) = *(current_arr + i) + x;
   }
   env->ReleasePrimitiveArrayCritical(java_array, current_arr, 0);
+}
+
+JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_App_printStringUTF(
+    JNIEnv *env, jclass App_class, jstring jstr) {
+
+  jboolean is_copy = 0;
+  const char *cstr = env->GetStringUTFChars(jstr, &is_copy);
+  printf("%s - is_copy=%d\n", cstr, is_copy);
+  env->ReleaseStringUTFChars(jstr, cstr);
+}
+
+JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_App_printStringCriticalUTF(
+    JNIEnv *env, jclass App_class, jstring jstr) {
+
+  jboolean is_copy = 0;
+  const jchar *jvalue = env->GetStringCritical(jstr, &is_copy);
+  jsize len = env->GetStringLength(jstr);
+
+  for (int i = 0; i < len; i++) {
+    putchar((char)*(jvalue + i));
+  }
+
+  printf(" - is_copy=%d\n", is_copy);
+  env->ReleaseStringCritical(jstr, jvalue);
 }

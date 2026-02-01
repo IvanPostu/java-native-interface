@@ -8,22 +8,27 @@ public class App {
         NativeUtils.loadLibraryFromJar("/native/libimpl.so");
     }
 
-    public static native void printHello();
-
     public static native void doubleArrayAddViaRegionAccessor(double[] arr, double x);
 
     public static native void doubleArrayAddViaElementsAccessor(double[] arr, double x);
 
     public static native void doubleArrayAddViaCriticalAccessor(double[] arr, double x);
 
+    private static native void printStringUTF(String s);
+
+    private static native void printStringCriticalUTF(String s);
+
     public static void main(String[] args) {
-        demo1();
+//        demo1();
+        demo2();
+    }
+
+    private static void demo2() {
+        printStringUTF("Test 123");
+        printStringCriticalUTF("Test 123");
     }
 
     private static void demo1() {
-        System.out.println("Hello World!");
-        App.printHello();
-
         {
             double x = 10.5;
             double[] arr = {1, 2, 3, 55.5};
