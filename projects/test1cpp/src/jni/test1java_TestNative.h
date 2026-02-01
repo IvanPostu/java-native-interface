@@ -213,6 +213,14 @@ JNIEXPORT jobject JNICALL Java_test1java_TestNative_createInner
 JNIEXPORT jobject JNICALL Java_test1java_TestNative_createNested
   (JNIEnv *, jclass);
 
+/*
+ * Class:     test1java_TestNative
+ * Method:    exceptionDemo
+ * Signature: (ZZZ)V
+ */
+JNIEXPORT void JNICALL Java_test1java_TestNative_exceptionDemo
+  (JNIEnv *, jclass, jboolean, jboolean, jboolean);
+
 #ifdef __cplusplus
 }
 #endif

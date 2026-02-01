@@ -81,13 +81,50 @@ public class TestNative {
 
     public static native TestNative.NestedClass createNested();
 
+    public static native void exceptionDemo(
+            boolean callJavaMethodThatThrowsException,
+            boolean throwExceptionFromTheNativeCode,
+            boolean handleExceptionInNativeCodeIfPresent);
+
+    public static void throwExceptionIfNeeded(boolean shouldBeThrown) throws Exception {
+        if (!shouldBeThrown) {
+            return;
+        }
+        throw new Exception("exception thrown by throwExceptionIfNeeded");
+    }
+
+    private static void fail() {
+        throw new Error("Should never happen");
+    }
+
     public static void main(String[] args) throws Exception {
 //        demo1();
 //        demo2();
 //        demo3();
 //        demo4();
 //        demo5();
-        demo6();
+//        demo6();
+        demo7();
+    }
+
+    private static void demo7() {
+        exceptionDemo(false, false, false); // no exception, no handling
+        try {
+            // exception is thrown in native code, not caught in native code
+            exceptionDemo(true, false, false);
+            fail();
+        } catch (Exception e) {
+            System.out.println("Expected Exception caught: " + e);
+        }
+        exceptionDemo(true, false, true);
+
+        try {
+            // exception is thrown by native code, not caught in native code
+            exceptionDemo(false, true, false);
+            fail();
+        } catch (IllegalArgumentException e) {
+            System.out.println("Expected IllegalArgumentException caught: " + e);
+        }
     }
 
     private static void demo6() {
@@ -107,6 +144,7 @@ public class TestNative {
 
     private static void demo4() throws Exception {
         Person person = new Person("Bob");
+        @SuppressWarnings("unchecked")
         Class<Person> clazz = (Class<Person>) person.getClass();
         Field f1 = clazz.getDeclaredField("name");
         printNameField(person, f1);

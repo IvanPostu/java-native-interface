@@ -437,3 +437,36 @@ Java_test1java_TestNative_createNested(JNIEnv *env, jclass TestNative) {
   jobject nested_instance = env->NewObject(nested_class, ctor_id, jstr);
   return nested_instance;
 }
+
+JNIEXPORT void JNICALL Java_test1java_TestNative_exceptionDemo(
+    JNIEnv *env, jclass TestNative, jboolean callJavaMethodThatThrowsException,
+    jboolean throwExceptionFromTheNativeCode,
+    jboolean handleExceptionInNativeCodeIfPresent) {
+
+  jclass class_instance = env->FindClass("test1java/TestNative");
+  jmethodID throwExceptionIfNeeded_id =
+      env->GetStaticMethodID(class_instance, "throwExceptionIfNeeded", "(Z)V");
+  env->CallStaticVoidMethod(class_instance, throwExceptionIfNeeded_id,
+                            callJavaMethodThatThrowsException);
+
+  jboolean exception_occured = env->ExceptionCheck();
+  if (handleExceptionInNativeCodeIfPresent && exception_occured) {
+    printf("Exception was caught and processed in native code\n");
+    jthrowable e = env->ExceptionOccurred();
+    jclass throwableClass = env->GetObjectClass(e);
+    jmethodID toStringMethod =
+        env->GetMethodID(throwableClass, "toString", "()Ljava/lang/String;");
+    jstring message = (jstring)env->CallObjectMethod(e, toStringMethod);
+    const char *messageChars = env->GetStringUTFChars(message, nullptr);
+    printf("Exception message: %s\n", messageChars);
+    env->ReleaseStringUTFChars(message, messageChars);
+    env -> ExceptionClear();
+  }
+
+  if(throwExceptionFromTheNativeCode) {
+    jclass illegalArgumentExceptionClass = env -> FindClass("java/lang/IllegalArgumentException");
+    env -> ThrowNew(illegalArgumentExceptionClass, "Exception thrown from the native code");
+    return; // return is important because it works different in native code
+  }
+}
+
