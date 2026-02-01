@@ -57,7 +57,7 @@ java -jar "$PROJECT_ROOT/projects/test1java/build/TestNative.jar"
 
   ```java
     static {
-      Syste,.loadLibrary("libraryName");
+      System.loadLibrary("test");
     }
   ```
 
@@ -164,7 +164,3 @@ export CPLUS_INCLUDE_PATH=/nix/store/abcd1234-gcc-13.2.0/include/c++/13.2.0:/nix
 - <https://www.gnu.org/software/gsl/#documentation>
 - <https://ftp.gnu.org/gnu/gsl/>
 - <https://www.w3schools.com/git/git_submodules.asp>
-
-## TODO
-
-- Use plugins for eclipse or intellij that show bytecode of source code
