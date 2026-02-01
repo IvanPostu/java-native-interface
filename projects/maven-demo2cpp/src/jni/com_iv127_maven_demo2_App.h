@@ -15,6 +15,30 @@ extern "C" {
 JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_App_printHello
   (JNIEnv *, jclass);
 
+/*
+ * Class:     com_iv127_maven_demo2_App
+ * Method:    doubleArrayAddViaRegionAccessor
+ * Signature: ([DD)V
+ */
+JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_App_doubleArrayAddViaRegionAccessor
+  (JNIEnv *, jclass, jdoubleArray, jdouble);
+
+/*
+ * Class:     com_iv127_maven_demo2_App
+ * Method:    doubleArrayAddViaElementsAccessor
+ * Signature: ([DD)V
+ */
+JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_App_doubleArrayAddViaElementsAccessor
+  (JNIEnv *, jclass, jdoubleArray, jdouble);
+
+/*
+ * Class:     com_iv127_maven_demo2_App
+ * Method:    doubleArrayAddViaCriticalAccessor
+ * Signature: ([DD)V
+ */
+JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_App_doubleArrayAddViaCriticalAccessor
+  (JNIEnv *, jclass, jdoubleArray, jdouble);
+
 #ifdef __cplusplus
 }
 #endif

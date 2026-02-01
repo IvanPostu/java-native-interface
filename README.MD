@@ -147,6 +147,13 @@ jobject person = env->NewObject(Person_class, person_ctor_method_id, name);
 - Why on header file generation/name generation based on class name `$` is replaced with 00024?
   - because $'s representation in utf16 is 00024
 - Java can generate header files based on .class files
+- If we call `GetDoubleArrayElements/GetPrimitiveArrayCritical` we need to call release function in the end of operation  `ReleaseDoubleArrayElements/ReleasePrimitiveArrayCritical`
+  - after calling `GetDoubleArrayElements/GetPrimitiveArrayCritical` GC will ignore these objects, it will consider them after calling  `Release...`
+  - shouldn't call any arbitrary functions between get and release
+- Difference between array manipulations: region, elements and critical
+  - region - manually create buffer in native code and call get/set region for that buffer
+  - elements - (GC ignores until release) returns pointer of array type, values are changed on release
+  - critical - (GC ignores until release) returns opaque pointer, values are changed directly
 
 ## Eclipse setup - cdt (C Development Tool) & (Enterprise Java Plugin)
 
