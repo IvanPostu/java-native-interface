@@ -45,6 +45,18 @@ mvnw archetype:generate
 mvnw -f "$PROJECT_ROOT/projects/maven-demo2/pom.xml" package
 
 mvnw -f "$PROJECT_ROOT/projects/maven-demo2/pom.xml" exec:java "-Dexec.mainClass=com.iv127.maven.demo2.App"
+
+build_dir="$(mktemp -d)" \
+  && javac \
+  -d "$build_dir" \
+  -h "$PROJECT_ROOT/projects/maven-demo2cpp/src/jni" \
+  $(find "$PROJECT_ROOT/projects/maven-demo2/src/main" -type f -name "*.java") \
+  && rm -rf "$build_dir"
+
+g++ -fPIC -shared \
+  -I"$PROJECT_ROOT/projects/maven-demo2cpp/src/jni" \
+  "$PROJECT_ROOT/projects/maven-demo2cpp/src/impl.cpp" \
+  -o "$PROJECT_ROOT/projects/maven-demo2/src/main/resources/native/libimpl.so"
 ```
 
 ## Core dump (caused by native code) - stacktrace
@@ -197,4 +209,9 @@ export CPLUS_INCLUDE_PATH=/nix/store/abcd1234-gcc-13.2.0/include/c++/13.2.0:/nix
 - <https://www.gnu.org/software/gsl/#documentation>
 - <https://ftp.gnu.org/gnu/gsl/>
 - <https://www.w3schools.com/git/git_submodules.asp>
-- https://www.baeldung.com/maven-archetype
+- <https://www.baeldung.com/maven-archetype>
+
+## Todo
+
+1. Bash script to generate jar for demo1
+1. TBD Maven: maven-compiler-plugin with -h
