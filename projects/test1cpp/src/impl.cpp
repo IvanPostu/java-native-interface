@@ -460,13 +460,30 @@ JNIEXPORT void JNICALL Java_test1java_TestNative_exceptionDemo(
     const char *messageChars = env->GetStringUTFChars(message, nullptr);
     printf("Exception message: %s\n", messageChars);
     env->ReleaseStringUTFChars(message, messageChars);
-    env -> ExceptionClear();
+    env->ExceptionClear();
   }
 
-  if(throwExceptionFromTheNativeCode) {
-    jclass illegalArgumentExceptionClass = env -> FindClass("java/lang/IllegalArgumentException");
-    env -> ThrowNew(illegalArgumentExceptionClass, "Exception thrown from the native code");
+  if (throwExceptionFromTheNativeCode) {
+    jclass illegalArgumentExceptionClass =
+        env->FindClass("java/lang/IllegalArgumentException");
+    env->ThrowNew(illegalArgumentExceptionClass,
+                  "Exception thrown from the native code");
     return; // return is important because it works different in native code
   }
 }
 
+JNIEXPORT jobject JNICALL
+Java_test1java_TestNative_createPerson__(JNIEnv *env, jclass TestNative) {
+
+  // can't be static
+  // because it is tied to the created instance and on the second call will
+  // cause error static auto Person_class = env->FindClass("test1java/Person");
+
+  auto Person_class = env->FindClass("test1java/Person");
+  static auto person_ctor_method_id =
+      env->GetMethodID(Person_class, "<init>", "(Ljava/lang/String;)V");
+
+  jstring name = env->NewStringUTF("Jim");
+  jobject person = env->NewObject(Person_class, person_ctor_method_id, name);
+  return person;
+}

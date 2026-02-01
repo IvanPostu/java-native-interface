@@ -146,7 +146,7 @@ JNIEXPORT jlong JNICALL Java_test1java_TestNative_freeMemory
  * Method:    createPerson
  * Signature: (Ljava/lang/String;I)Ltest1java/Person;
  */
-JNIEXPORT jobject JNICALL Java_test1java_TestNative_createPerson
+JNIEXPORT jobject JNICALL Java_test1java_TestNative_createPerson__Ljava_lang_String_2I
   (JNIEnv *, jclass, jstring, jint);
 
 /*
@@ -220,6 +220,14 @@ JNIEXPORT jobject JNICALL Java_test1java_TestNative_createNested
  */
 JNIEXPORT void JNICALL Java_test1java_TestNative_exceptionDemo
   (JNIEnv *, jclass, jboolean, jboolean, jboolean);
+
+/*
+ * Class:     test1java_TestNative
+ * Method:    createPerson
+ * Signature: ()Ltest1java/Person;
+ */
+JNIEXPORT jobject JNICALL Java_test1java_TestNative_createPerson__
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }

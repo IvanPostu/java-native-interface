@@ -37,6 +37,22 @@ bash "$PROJECT_ROOT/projects/test1cpp/scripts/build-jar.sh" "test1java.TestNativ
 java -jar "$PROJECT_ROOT/projects/test1java/build/TestNative.jar"
 ```
 
+## Core dump (caused by native code) - stacktrace
+
+- example: `hs_err_pid19942.log`
+- <img src="./_forReadme/image copy 3.png" width="500px" />
+
+### Example of problem
+
+```c
+static auto Person_class = env->FindClass("test1java/Person");
+// ...
+jobject person = env->NewObject(Person_class, person_ctor_method_id, name);
+// on the second call it crashes because class instance on the first call is associated with the instance
+
+// The rule is to not cache jclass when creating objects
+```
+
 ## General
 
 - JNI - is a mechanism that provides the bridge to call functions from the native libraries
@@ -156,6 +172,13 @@ export CPLUS_INCLUDE_PATH=/nix/store/abcd1234-gcc-13.2.0/include/c++/13.2.0:/nix
 
 - jclasslib - plugin for showing java bytecode of class
 - <img src="./_forReadme/image copy 2.png" width="500px" />
+
+## Windows setup
+
+1. Install `MinGW`
+1. Set `MINGW_HOME` env. variable to:
+1. <img src="./_forReadme/image copy 4.png" width="500px" />
+1. 64 bit java can work with only 64 bit .dll
 
 ## References
 

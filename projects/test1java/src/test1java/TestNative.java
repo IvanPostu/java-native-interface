@@ -97,6 +97,8 @@ public class TestNative {
         throw new Error("Should never happen");
     }
 
+    private static native Person createPerson();
+
     public static void main(String[] args) throws Exception {
 //        demo1();
 //        demo2();
@@ -104,7 +106,15 @@ public class TestNative {
 //        demo4();
 //        demo5();
 //        demo6();
-        demo7();
+//        demo7();
+        demo8();
+    }
+
+    private static void demo8() {
+        Person p1 = createPerson();
+        System.out.println(p1);
+        Person p2 = createPerson();
+        System.out.println(p2);
     }
 
     private static void demo7() {
