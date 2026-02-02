@@ -70,3 +70,18 @@ JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_App_printStringCriticalUTF(
   printf(" - is_copy=%d\n", is_copy);
   env->ReleaseStringCritical(jstr, jvalue);
 }
+
+jint doubleAge(JNIEnv *env, jclass App, jint age);
+
+JNIEXPORT void JNICALL
+Java_com_iv127_maven_demo2_App_registerNatives(JNIEnv *env, jclass Appclass) {
+
+  JNINativeMethod doubleAge_method;
+  doubleAge_method.name = (char *)"doubleAge";
+  doubleAge_method.signature = (char *)"(I)I";
+  doubleAge_method.fnPtr = (void *)doubleAge;
+
+  env->RegisterNatives(Appclass, &doubleAge_method, 1);
+}
+
+jint doubleAge(JNIEnv *env, jclass App, jint age) { return age * 2; }

@@ -47,6 +47,22 @@ JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_App_printStringUTF
 JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_App_printStringCriticalUTF
   (JNIEnv *, jclass, jstring);
 
+/*
+ * Class:     com_iv127_maven_demo2_App
+ * Method:    registerNatives
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_App_registerNatives
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_iv127_maven_demo2_App
+ * Method:    doubleAge
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_iv127_maven_demo2_App_doubleAge
+  (JNIEnv *, jclass, jint);
+
 #ifdef __cplusplus
 }
 #endif

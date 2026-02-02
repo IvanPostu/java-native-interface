@@ -6,6 +6,7 @@ public class App {
 
     static {
         NativeUtils.loadLibraryFromJar("/native/libimpl.so");
+        registerNatives();
     }
 
     public static native void doubleArrayAddViaRegionAccessor(double[] arr, double x);
@@ -18,9 +19,21 @@ public class App {
 
     private static native void printStringCriticalUTF(String s);
 
+    // Convention name
+    private static native void registerNatives();
+
+    private static native int doubleAge(int age);
+
     public static void main(String[] args) {
 //        demo1();
-        demo2();
+//        demo2();
+        demo3();
+    }
+
+    private static void demo3() {
+        System.out.println("doubleAge(3)=" + App.doubleAge(3));
+        System.out.println("doubleAge(6)=" + App.doubleAge(6));
+        System.out.println("doubleAge(33)=" + App.doubleAge(33));
     }
 
     private static void demo2() {
