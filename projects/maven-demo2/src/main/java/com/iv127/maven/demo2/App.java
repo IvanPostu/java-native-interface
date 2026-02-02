@@ -1,5 +1,8 @@
 package com.iv127.maven.demo2;
 
+import com.iv127.maven.demo2.misc.Unsafe;
+
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 public class App {
@@ -26,11 +29,46 @@ public class App {
 
     private static native int tripleAge(int age);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 //        demo1();
 //        demo2();
 //        demo3();
-        demo4();
+//        demo4();
+        demo5();
+    }
+
+    private static void demo5() throws Exception {
+        Unsafe unsafe = getUnsafeInstance();
+        long pointer = Unsafe.allocateMemory(10);
+        System.out.printf("address: 0x%s%n", Long.toHexString(pointer));
+
+        unsafe.putInt(pointer, 90);
+        System.out.println(unsafe.getInt(pointer));
+
+        unsafe.putDouble(pointer + 4, 22.33);
+        System.out.println(unsafe.getDouble(pointer + 4));
+
+        unsafe.putLong(pointer + 4 + 8, 999999181);
+        System.out.println(unsafe.getLong(pointer + 4 + 8));
+
+        unsafe.putByte(pointer + 4 + 8 + 8, (byte)122);
+        System.out.println(unsafe.getByte(pointer + 4 + 8 + 8));
+
+        Unsafe.freeMemory(pointer);
+    }
+
+    private static Unsafe getUnsafeInstance() throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+        Class<?> clas = Class.forName("com.iv127.maven.demo2.misc.Unsafe");
+        Field field = clas.getDeclaredField("theUnsafe");
+        boolean accessible = field.canAccess(null);
+        Unsafe unsafe = null;
+        try {
+            field.setAccessible(true);
+            unsafe = (Unsafe) field.get(null);
+        } finally {
+            field.setAccessible(accessible);
+        }
+        return unsafe;
     }
 
     private static void demo4() {

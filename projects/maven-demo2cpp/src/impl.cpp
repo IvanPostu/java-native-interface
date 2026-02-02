@@ -1,6 +1,67 @@
 #include "./jni/com_iv127_maven_demo2_App.h"
+#include "./jni/com_iv127_maven_demo2_misc_Unsafe.h"
 #include <cstdio>
 #include <cstdlib>
+
+JNIEXPORT jlong JNICALL Java_com_iv127_maven_demo2_misc_Unsafe_allocateMemory(
+    JNIEnv *env, jclass Unsafe_class, jlong bytes) {
+  char *pointer = (char *)malloc(bytes * sizeof(char));
+  return (jlong)pointer;
+}
+
+JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_misc_Unsafe_freeMemory(
+    JNIEnv *env, jclass Unsafe_class, jlong pointer) {
+  char *_pointer = (char *)pointer;
+  free(_pointer);
+}
+
+JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_misc_Unsafe_putInt(
+    JNIEnv *env, jobject, jlong address, jint x) {
+  jint *pointer = (jint *)address;
+  *pointer = x;
+}
+
+JNIEXPORT jint JNICALL Java_com_iv127_maven_demo2_misc_Unsafe_getInt(
+    JNIEnv *env, jobject, jlong address) {
+  jint *pointer = (jint *)address;
+  return *pointer;
+}
+
+JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_misc_Unsafe_putDouble(
+    JNIEnv *env, jobject, jlong address, jdouble x) {
+  jdouble *pointer = (jdouble *)address;
+  *pointer = x;
+}
+
+JNIEXPORT jdouble JNICALL Java_com_iv127_maven_demo2_misc_Unsafe_getDouble(
+    JNIEnv *env, jobject, jlong address) {
+  jdouble *pointer = (jdouble *)address;
+  return *pointer;
+}
+
+JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_misc_Unsafe_putLong(
+    JNIEnv *env, jobject, jlong address, jlong x) {
+  jlong *pointer = (jlong *)address;
+  *pointer = x;
+}
+
+JNIEXPORT jlong JNICALL Java_com_iv127_maven_demo2_misc_Unsafe_getLong(
+    JNIEnv *env, jobject, jlong address) {
+  jlong *pointer = (jlong *)address;
+  return *pointer;
+}
+
+JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_misc_Unsafe_putByte(
+    JNIEnv *env, jobject, jlong address, jbyte x) {
+  jbyte *pointer = (jbyte *)address;
+  *pointer = x;
+}
+
+JNIEXPORT jbyte JNICALL Java_com_iv127_maven_demo2_misc_Unsafe_getByte(
+    JNIEnv *env, jobject, jlong address) {
+  jbyte *pointer = (jbyte *)address;
+  return *pointer;
+}
 
 JNIEXPORT void JNICALL
 Java_com_iv127_maven_demo2_App_doubleArrayAddViaRegionAccessor(
