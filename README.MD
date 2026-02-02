@@ -154,6 +154,10 @@ jobject person = env->NewObject(Person_class, person_ctor_method_id, name);
   - region - manually create buffer in native code and call get/set region for that buffer
   - elements - (GC ignores until release) returns pointer of array type, values are changed on release
   - critical - (GC ignores until release) returns opaque pointer, values are changed directly
+- Difference between `Eager Link` and `Lazy Link`
+  - `Eager Link` - create bindings programmatically inside `JNI_OnLoad`, pros: fail fast, better performance and no need to generate header files for java classes
+  - `Lazy Link` - generate header files for java classes and implement those functions, fail late (during call), slow because it does lookup of function symbols
+- JNI allows working with any class inside classpath including libraries
 
 ## Eclipse setup - cdt (C Development Tool) & (Enterprise Java Plugin)
 
