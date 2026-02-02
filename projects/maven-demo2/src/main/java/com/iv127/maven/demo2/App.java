@@ -24,6 +24,8 @@ public class App {
 
     private static native int doubleAge(int age);
 
+    private static native int tripleAge(int age);
+
     public static void main(String[] args) {
 //        demo1();
 //        demo2();
@@ -34,6 +36,10 @@ public class App {
         System.out.println("doubleAge(3)=" + App.doubleAge(3));
         System.out.println("doubleAge(6)=" + App.doubleAge(6));
         System.out.println("doubleAge(33)=" + App.doubleAge(33));
+
+        System.out.println("tripleAge(3)=" + App.tripleAge(3));
+        System.out.println("tripleAge(6)=" + App.tripleAge(6));
+        System.out.println("tripleAge(33)=" + App.tripleAge(33));
     }
 
     private static void demo2() {

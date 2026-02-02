@@ -85,3 +85,24 @@ Java_com_iv127_maven_demo2_App_registerNatives(JNIEnv *env, jclass Appclass) {
 }
 
 jint doubleAge(JNIEnv *env, jclass App, jint age) { return age * 2; }
+jint tripleAge(JNIEnv *env, jclass App, jint age) { return age * 3; }
+
+static JNINativeMethod methods[] = {
+    {(char *)"tripleAge", (char *)"(I)I", (void *)tripleAge}};
+
+extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
+  JNIEnv *env;
+  if (vm->GetEnv((void **)&env, JNI_VERSION_1_6) != JNI_OK) {
+    return JNI_ERR;
+  }
+
+  jclass cls = env->FindClass("com/iv127/maven/demo2/App");
+  if (cls == NULL)
+    return JNI_ERR;
+
+  jint methods_len = sizeof(methods) / sizeof(methods[0]);
+  if (env->RegisterNatives(cls, methods, methods_len) < 0)
+    return JNI_ERR;
+
+  return JNI_VERSION_1_6;
+}
