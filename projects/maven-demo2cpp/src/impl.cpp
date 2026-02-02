@@ -87,6 +87,74 @@ Java_com_iv127_maven_demo2_App_registerNatives(JNIEnv *env, jclass Appclass) {
 jint doubleAge(JNIEnv *env, jclass App, jint age) { return age * 2; }
 jint tripleAge(JNIEnv *env, jclass App, jint age) { return age * 3; }
 
+#ifndef PERSON_H_
+#define PERSON_H_
+
+#include <iostream>
+
+class Person {
+private:
+  std::string name;
+  int age;
+
+public:
+  Person(std::string name, int age);
+  virtual ~Person() noexcept;
+
+  std::string &getName();
+  int getAge();
+  void sayHi();
+};
+
+#endif
+
+Person::Person(std::string name, int age) : name(name), age(age) {
+  std::cout << "Person C++ instance created, name=" << name << " age=" << age
+            << std::endl;
+}
+
+Person::~Person() noexcept {
+  std::cout << "Person C++ instance destroyed, name=" << name << " age=" << age
+            << std::endl;
+}
+
+std::string &Person::getName() { return this->name; }
+
+int Person::getAge() { return this->age; }
+
+void Person::sayHi() {
+  std::cout << "C++ sayHi method call: name=" << name << " age=" << age
+            << std::endl;
+}
+
+jlong person_allocate0(JNIEnv *env, jclass Person_class, jstring name,
+                       jint age) {
+  const char *name_chars = env->GetStringUTFChars(name, 0);
+  Person *person = new Person(name_chars, age);
+  env->ReleaseStringUTFChars(name, name_chars);
+  return (jlong)person;
+}
+
+void person_free0(JNIEnv *env, jclass Person_class, jlong pointer) {
+  Person *person = (Person *)pointer;
+  delete person;
+}
+
+jstring person_get_name0(JNIEnv *env, jclass Person_class, jlong pointer) {
+  Person *person = (Person *)pointer;
+  return env->NewStringUTF(person->getName().c_str());
+}
+
+jint person_get_age0(JNIEnv *env, jclass Person_class, jlong pointer) {
+  Person *person = (Person *)pointer;
+  return person->getAge();
+}
+
+void person_say_hi0(JNIEnv *env, jclass Person_class, jlong pointer) {
+  Person *person = (Person *)pointer;
+  person->sayHi();
+}
+
 static JNINativeMethod methods[] = {
     {(char *)"tripleAge", (char *)"(I)I", (void *)tripleAge}};
 
@@ -95,14 +163,69 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
   if (vm->GetEnv((void **)&env, JNI_VERSION_1_6) != JNI_OK) {
     return JNI_ERR;
   }
+  {
+    jclass app_class = env->FindClass("com/iv127/maven/demo2/App");
+    if (app_class == NULL) {
+      return JNI_ERR;
+    }
 
-  jclass cls = env->FindClass("com/iv127/maven/demo2/App");
-  if (cls == NULL)
-    return JNI_ERR;
+    jint methods_len = sizeof(methods) / sizeof(methods[0]);
+    if (env->RegisterNatives(app_class, methods, methods_len) < 0) {
+      return JNI_ERR;
+    }
+  }
 
-  jint methods_len = sizeof(methods) / sizeof(methods[0]);
-  if (env->RegisterNatives(cls, methods, methods_len) < 0)
-    return JNI_ERR;
+  jclass person_class = env->FindClass("com/iv127/maven/demo2/Person");
+  {
+    JNINativeMethod method;
+    method.name = (char *)"allocate0";
+    method.signature = (char *)"(Ljava/lang/String;I)J";
+    method.fnPtr = (void *)person_allocate0;
+
+    if (env->RegisterNatives(person_class, &method, 1) < 0) {
+      return JNI_ERR;
+    }
+  }
+  {
+    JNINativeMethod method;
+    method.name = (char *)"free0";
+    method.signature = (char *)"(J)V";
+    method.fnPtr = (void *)person_free0;
+
+    if (env->RegisterNatives(person_class, &method, 1) < 0) {
+      return JNI_ERR;
+    }
+  }
+  {
+    JNINativeMethod method;
+    method.name = (char *)"getName0";
+    method.signature = (char *)"(J)Ljava/lang/String;";
+    method.fnPtr = (void *)person_get_name0;
+
+    if (env->RegisterNatives(person_class, &method, 1) < 0) {
+      return JNI_ERR;
+    }
+  }
+  {
+    JNINativeMethod method;
+    method.name = (char *)"getAge0";
+    method.signature = (char *)"(J)I";
+    method.fnPtr = (void *)person_get_age0;
+
+    if (env->RegisterNatives(person_class, &method, 1) < 0) {
+      return JNI_ERR;
+    }
+  }
+  {
+    JNINativeMethod method;
+    method.name = (char *)"sayHi0";
+    method.signature = (char *)"(J)V";
+    method.fnPtr = (void *)person_say_hi0;
+
+    if (env->RegisterNatives(person_class, &method, 1) < 0) {
+      return JNI_ERR;
+    }
+  }
 
   return JNI_VERSION_1_6;
 }

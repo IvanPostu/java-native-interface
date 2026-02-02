@@ -29,7 +29,19 @@ public class App {
     public static void main(String[] args) {
 //        demo1();
 //        demo2();
-        demo3();
+//        demo3();
+        demo4();
+    }
+
+    private static void demo4() {
+        Person p1 = Person.allocate("Jim", 22);
+        Person p2 = Person.allocate("Rick", 65);
+
+        p1.sayHi();
+        p2.sayHi();
+
+        Person.free(p1);
+        Person.free(p2);
     }
 
     private static void demo3() {

@@ -63,6 +63,14 @@ JNIEXPORT void JNICALL Java_com_iv127_maven_demo2_App_registerNatives
 JNIEXPORT jint JNICALL Java_com_iv127_maven_demo2_App_doubleAge
   (JNIEnv *, jclass, jint);
 
+/*
+ * Class:     com_iv127_maven_demo2_App
+ * Method:    tripleAge
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_iv127_maven_demo2_App_tripleAge
+  (JNIEnv *, jclass, jint);
+
 #ifdef __cplusplus
 }
 #endif
