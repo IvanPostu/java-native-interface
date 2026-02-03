@@ -185,6 +185,7 @@ jobject person = env->NewObject(Person_class, person_ctor_method_id, name);
 - `GetObjectArrayElement` creates a local reference, in native code all local references are deleted when this native function finishes execution, there is a memory limit for them so `DeleteLocalRef` can help
 - `ExceptionOccurred` returns null in native code if there is no exception, it can be used directly in if clause
 - `JNIEnv` is local to a thread (internally stores data in thread local), it **MUSTN'T** be used by another thread
+- The type `JNIEnv` is a pointer to array of pointers to functions, it is a strict standard, each element on each index holds specific function, see `jni.h`
 
 ## Eclipse setup - cdt (C Development Tool) & (Enterprise Java Plugin)
 
