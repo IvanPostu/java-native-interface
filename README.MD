@@ -154,10 +154,37 @@ jobject person = env->NewObject(Person_class, person_ctor_method_id, name);
   - region - manually create buffer in native code and call get/set region for that buffer
   - elements - (GC ignores until release) returns pointer of array type, values are changed on release
   - critical - (GC ignores until release) returns opaque pointer, values are changed directly
-- Difference between `Eager Link` and `Lazy Link`
+- Difference between `Eager Link` (RegisterNatives manual, explicit method binding) and `Lazy Link` (Dynamic symbol lookup (default JNI behavior))
   - `Eager Link` - create bindings programmatically inside `JNI_OnLoad`, pros: fail fast, better performance and no need to generate header files for java classes
   - `Lazy Link` - generate header files for java classes and implement those functions, fail late (during call), slow because it does lookup of function symbols
+    - JVM loads your native library, JVM looks for exported C symbols whose names follow the JNI naming convention If it finds them → native method is linked, If not → UnsatisfiedLinkError
 - JNI allows working with any class inside classpath including libraries
+- What is name mangling
+  - Transformation of function name by C++ compiler from `int add(int a, int b);` -> `_Z3addii` or
+
+    ```c++
+    namespace math {
+        class Calc {
+        public:
+            int add(int, int);  // _ZN4math4Calc3addEii
+        };
+    }
+    ```
+
+    - C language doesn't do mangling because function by default is unique
+    - to disable mangling in C++, do: `extern "C" int add(int a, int b);` or `extern "C" {functions}`
+- To remember `Get*ArrayCritical` / `Release*ArrayCritical` is for for direct access (when performance is important)
+- Local reference inside native code. E.g. array of objects that we iterate and call `getObjectArrayElement`, if it is too big `NewLocalRef/DeleteLocalRef` can help
+- Diff between Global Reference and Weak Global reference
+  - Weak Global Reference can be garbage collected while simple Global Reference should be manually released
+- Diff between NewObject, NewObjectA and NewObjectV
+  - NewObject - constructor arguments directly as variadic parameters, i.e. `...`
+  - NewObjectA - Arguments are passed as an array of jvalue (a union)  i.e. `const jvalue *args`
+  - NewObjectV - Arguments come from a va_list `va_list args`
+- In between `GetStringCritical` and `ReleaseStringCritical` MUSTN't call any JNI function
+- `GetObjectArrayElement` creates a local reference, in native code all local references are deleted when this native function finishes execution, there is a memory limit for them so `DeleteLocalRef` can help
+- `ExceptionOccurred` returns null in native code if there is no exception, it can be used directly in if clause
+- `JNIEnv` is local to a thread (internally stores data in thread local), it **MUSTN'T** be used by another thread
 
 ## Eclipse setup - cdt (C Development Tool) & (Enterprise Java Plugin)
 
@@ -214,6 +241,20 @@ export CPLUS_INCLUDE_PATH=/nix/store/abcd1234-gcc-13.2.0/include/c++/13.2.0:/nix
 1. <img src="./_forReadme/image copy 4.png" width="500px" />
 1. 64 bit java can work with only 64 bit .dll
 
+## Decompile.class file using javap cli tool (from jdk)
+
+- `javap -v $PROJECT_ROOT/projects/test1java/out/production/test1java/test1java/Person.class`
+
+see [javap Output](./_forReadme/javap_out.txt)
+
+## Performance advices
+
+- Not cache method, field and class IDs
+- Trigger array copies
+- Reaching back instead of passing parameters
+- Using many local references without informing JVM
+- **Very good performance advices can be found in IMB reference**
+
 ## References
 
 - <https://github.com/adamheinrich/native-utils/blob/master/src/main/java/cz/adamh/utils/NativeUtils.java>
@@ -224,232 +265,5 @@ export CPLUS_INCLUDE_PATH=/nix/store/abcd1234-gcc-13.2.0/include/c++/13.2.0:/nix
 - <https://www.baeldung.com/maven-archetype>
 - <https://maven.apache.org/guides/mini/guide-creating-archetypes.html>
 - <https://www.geeksforgeeks.org/java/javap-tool-in-java-with-examples/>
-
-## Decompile.class file using javah cli tool (from jdk)
-
-- `javap -v $PROJECT_ROOT/projects/test1java/out/production/test1java/test1java/Person.class`
-
-```sh
-Classfile /home/iv127/Projects/java-native-interface/projects/test1java/out/production/test1java/test1java/Person.class
-  Last modified Feb 1, 2026; size 1620 bytes
-  SHA-256 checksum 48d49841946ad65d8dfa5ecbc8b45a97031c46863d64e72f9155406c1bd49d49
-  Compiled from "Person.java"
-public class test1java.Person
-  minor version: 0
-  major version: 65
-  flags: (0x0021) ACC_PUBLIC, ACC_SUPER
-  this_class: #8                          // test1java/Person
-  super_class: #2                         // java/lang/Object
-  interfaces: 0, fields: 4, methods: 6, attributes: 3
-Constant pool:
-   #1 = Methodref          #2.#3          // java/lang/Object."<init>":()V
-   #2 = Class              #4             // java/lang/Object
-   #3 = NameAndType        #5:#6          // "<init>":()V
-   #4 = Utf8               java/lang/Object
-   #5 = Utf8               <init>
-   #6 = Utf8               ()V
-   #7 = Fieldref           #8.#9          // test1java/Person.age:I
-   #8 = Class              #10            // test1java/Person
-   #9 = NameAndType        #11:#12        // age:I
-  #10 = Utf8               test1java/Person
-  #11 = Utf8               age
-  #12 = Utf8               I
-  #13 = Fieldref           #8.#14         // test1java/Person.name:Ljava/lang/String;
-  #14 = NameAndType        #15:#16        // name:Ljava/lang/String;
-  #15 = Utf8               name
-  #16 = Utf8               Ljava/lang/String;
-  #17 = InvokeDynamic      #0:#18         // #0:makeConcatWithConstants:(Ljava/lang/String;I)Ljava/lang/String;
-  #18 = NameAndType        #19:#20        // makeConcatWithConstants:(Ljava/lang/String;I)Ljava/lang/String;
-  #19 = Utf8               makeConcatWithConstants
-  #20 = Utf8               (Ljava/lang/String;I)Ljava/lang/String;
-  #21 = Fieldref           #8.#22         // test1java/Person.EXAMPLE_FIELD:Ljava/lang/String;
-  #22 = NameAndType        #23:#16        // EXAMPLE_FIELD:Ljava/lang/String;
-  #23 = Utf8               EXAMPLE_FIELD
-  #24 = String             #25            // name=%s,age=%s,EXAMPLE_FIELD=%s,EXAMPLE_INT_FIELD=%s
-  #25 = Utf8               name=%s,age=%s,EXAMPLE_FIELD=%s,EXAMPLE_INT_FIELD=%s
-  #26 = Methodref          #27.#28        // java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
-  #27 = Class              #29            // java/lang/Integer
-  #28 = NameAndType        #30:#31        // valueOf:(I)Ljava/lang/Integer;
-  #29 = Utf8               java/lang/Integer
-  #30 = Utf8               valueOf
-  #31 = Utf8               (I)Ljava/lang/Integer;
-  #32 = Fieldref           #8.#33         // test1java/Person.EXAMPLE_INT_FIELD:I
-  #33 = NameAndType        #34:#12        // EXAMPLE_INT_FIELD:I
-  #34 = Utf8               EXAMPLE_INT_FIELD
-  #35 = Methodref          #36.#37        // java/lang/String.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
-  #36 = Class              #38            // java/lang/String
-  #37 = NameAndType        #39:#40        // format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
-  #38 = Utf8               java/lang/String
-  #39 = Utf8               format
-  #40 = Utf8               (Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
-  #41 = String             #42            // example
-  #42 = Utf8               example
-  #43 = Utf8               (Ljava/lang/String;)V
-  #44 = Utf8               Code
-  #45 = Utf8               LineNumberTable
-  #46 = Utf8               LocalVariableTable
-  #47 = Utf8               this
-  #48 = Utf8               Ltest1java/Person;
-  #49 = Utf8               getName
-  #50 = Utf8               (I)Ljava/lang/String;
-  #51 = Utf8               i
-  #52 = Utf8               ()Ljava/lang/String;
-  #53 = Utf8               getExampleField
-  #54 = Utf8               toString
-  #55 = Utf8               <clinit>
-  #56 = Utf8               SourceFile
-  #57 = Utf8               Person.java
-  #58 = Utf8               BootstrapMethods
-  #59 = String             #60            // \u0001 \u0001
-  #60 = Utf8               \u0001 \u0001
-  #61 = MethodHandle       6:#62          // REF_invokeStatic java/lang/invoke/StringConcatFactory.makeConcatWithConstants:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
-  #62 = Methodref          #63.#64        // java/lang/invoke/StringConcatFactory.makeConcatWithConstants:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
-  #63 = Class              #65            // java/lang/invoke/StringConcatFactory
-  #64 = NameAndType        #19:#66        // makeConcatWithConstants:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
-  #65 = Utf8               java/lang/invoke/StringConcatFactory
-  #66 = Utf8               (Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
-  #67 = Utf8               InnerClasses
-  #68 = Class              #69            // java/lang/invoke/MethodHandles$Lookup
-  #69 = Utf8               java/lang/invoke/MethodHandles$Lookup
-  #70 = Class              #71            // java/lang/invoke/MethodHandles
-  #71 = Utf8               java/lang/invoke/MethodHandles
-  #72 = Utf8               Lookup
-{
-  static java.lang.String EXAMPLE_FIELD;
-    descriptor: Ljava/lang/String;
-    flags: (0x0008) ACC_STATIC
-
-  static int EXAMPLE_INT_FIELD;
-    descriptor: I
-    flags: (0x0008) ACC_STATIC
-
-  public test1java.Person(java.lang.String);
-    descriptor: (Ljava/lang/String;)V
-    flags: (0x0001) ACC_PUBLIC
-    Code:
-      stack=2, locals=2, args_size=2
-         0: aload_0
-         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
-         4: aload_0
-         5: bipush        33
-         7: putfield      #7                  // Field age:I
-        10: aload_0
-        11: aload_1
-        12: putfield      #13                 // Field name:Ljava/lang/String;
-        15: return
-      LineNumberTable:
-        line 11: 0
-        line 8: 4
-        line 12: 10
-        line 13: 15
-      LocalVariableTable:
-        Start  Length  Slot  Name   Signature
-            0      16     0  this   Ltest1java/Person;
-            0      16     1  name   Ljava/lang/String;
-
-  public java.lang.String getName(int);
-    descriptor: (I)Ljava/lang/String;
-    flags: (0x0001) ACC_PUBLIC
-    Code:
-      stack=2, locals=2, args_size=2
-         0: aload_0
-         1: getfield      #13                 // Field name:Ljava/lang/String;
-         4: iload_1
-         5: invokedynamic #17,  0             // InvokeDynamic #0:makeConcatWithConstants:(Ljava/lang/String;I)Ljava/lang/String;
-        10: areturn
-      LineNumberTable:
-        line 16: 0
-      LocalVariableTable:
-        Start  Length  Slot  Name   Signature
-            0      11     0  this   Ltest1java/Person;
-            0      11     1     i   I
-
-  public java.lang.String getName();
-    descriptor: ()Ljava/lang/String;
-    flags: (0x0001) ACC_PUBLIC
-    Code:
-      stack=1, locals=1, args_size=1
-         0: aload_0
-         1: getfield      #13                 // Field name:Ljava/lang/String;
-         4: areturn
-      LineNumberTable:
-        line 20: 0
-      LocalVariableTable:
-        Start  Length  Slot  Name   Signature
-            0       5     0  this   Ltest1java/Person;
-
-  public static java.lang.String getExampleField(int);
-    descriptor: (I)Ljava/lang/String;
-    flags: (0x0009) ACC_PUBLIC, ACC_STATIC
-    Code:
-      stack=2, locals=1, args_size=1
-         0: getstatic     #21                 // Field EXAMPLE_FIELD:Ljava/lang/String;
-         3: iload_0
-         4: invokedynamic #17,  0             // InvokeDynamic #0:makeConcatWithConstants:(Ljava/lang/String;I)Ljava/lang/String;
-         9: areturn
-      LineNumberTable:
-        line 24: 0
-      LocalVariableTable:
-        Start  Length  Slot  Name   Signature
-            0      10     0     i   I
-
-  public java.lang.String toString();
-    descriptor: ()Ljava/lang/String;
-    flags: (0x0001) ACC_PUBLIC
-    Code:
-      stack=5, locals=1, args_size=1
-         0: ldc           #24                 // String name=%s,age=%s,EXAMPLE_FIELD=%s,EXAMPLE_INT_FIELD=%s
-         2: iconst_4
-         3: anewarray     #2                  // class java/lang/Object
-         6: dup
-         7: iconst_0
-         8: aload_0
-         9: getfield      #13                 // Field name:Ljava/lang/String;
-        12: aastore
-        13: dup
-        14: iconst_1
-        15: aload_0
-        16: getfield      #7                  // Field age:I
-        19: invokestatic  #26                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
-        22: aastore
-        23: dup
-        24: iconst_2
-        25: getstatic     #21                 // Field EXAMPLE_FIELD:Ljava/lang/String;
-        28: aastore
-        29: dup
-        30: iconst_3
-        31: getstatic     #32                 // Field EXAMPLE_INT_FIELD:I
-        34: invokestatic  #26                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
-        37: aastore
-        38: invokestatic  #35                 // Method java/lang/String.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
-        41: areturn
-      LineNumberTable:
-        line 29: 0
-        line 30: 19
-        line 29: 38
-      LocalVariableTable:
-        Start  Length  Slot  Name   Signature
-            0      42     0  this   Ltest1java/Person;
-
-  static {};
-    descriptor: ()V
-    flags: (0x0008) ACC_STATIC
-    Code:
-      stack=1, locals=0, args_size=0
-         0: ldc           #41                 // String example
-         2: putstatic     #21                 // Field EXAMPLE_FIELD:Ljava/lang/String;
-         5: bipush        22
-         7: putstatic     #32                 // Field EXAMPLE_INT_FIELD:I
-        10: return
-      LineNumberTable:
-        line 5: 0
-        line 6: 5
-}
-SourceFile: "Person.java"
-BootstrapMethods:
-  0: #61 REF_invokeStatic java/lang/invoke/StringConcatFactory.makeConcatWithConstants:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
-    Method arguments:
-      #59 \u0001 \u0001
-InnerClasses:
-  public static final #72= #68 of #70;    // Lookup=class java/lang/invoke/MethodHandles$Lookup of class java/lang/invoke/MethodHandles
-```
+- <https://docs.oracle.com/javase/8/docs/technotes/guides/jni/>
+- <https://developer.ibm.com/articles/j-jni/>
