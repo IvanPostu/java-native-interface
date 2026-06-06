@@ -226,20 +226,20 @@ export CPLUS_INCLUDE_PATH=/nix/store/abcd1234-gcc-13.2.0/include/c++/13.2.0:/nix
 
 ## VSCodium setup
 
-- <img src="./_forReadme/image copy.png" width="500px" />
+- <img src="./_forReadme/image copy.png" width="650px" />
 - add `clangd` language server - part of `clang-tools` package
 
 ## IntelliJ
 
 - jclasslib - plugin for showing java bytecode of class
 - basically does exactly what `javap` do
-- <img src="./_forReadme/image copy 2.png" width="500px" />
+- <img src="./_forReadme/image copy 2.png" width="650px" />
 
 ## Windows setup
 
 1. Install `MinGW`
 1. Set `MINGW_HOME` env. variable to:
-1. <img src="./_forReadme/image copy 4.png" width="500px" />
+1. <img src="./_forReadme/image copy 4.png" width="650px" />
 1. 64 bit java can work with only 64 bit .dll
 
 ## Decompile.class file using javap cli tool (from jdk)
